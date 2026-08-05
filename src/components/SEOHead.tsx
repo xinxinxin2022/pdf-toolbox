@@ -1,0 +1,41 @@
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+
+interface SEOHeadProps {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogType?: string;
+  jsonLd?: object;
+}
+
+export default function SEOHead({ title, description, canonical, ogType = 'website', jsonLd }: SEOHeadProps) {
+  const { i18n } = useTranslation();
+  const baseUrl = 'https://pdf-toolbox.asia';
+  const canonicalUrl = canonical || `${baseUrl}${i18n.language === 'en' ? '/' : '/'}#${window.location.hash.slice(1) || '/'}`;
+
+  return (
+    <Helmet>
+      <html lang={i18n.language} />
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={canonicalUrl} />
+
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content={ogType} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:site_name" content="PDFToolBox" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+
+      {jsonLd && (
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
+      )}
+    </Helmet>
+  );
+}
