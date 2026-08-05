@@ -22,60 +22,62 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${
+    <header className={`sticky top-0 z-50 transition-all duration-200 ${
       scrolled
-        ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm'
-        : 'bg-white dark:bg-gray-900'
+        ? 'bg-white/70 dark:bg-black/70 backdrop-blur-xl border-b border-neutral-100 dark:border-neutral-800'
+        : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold text-primary-600 dark:text-primary-400">
-            <span className="text-2xl">📄</span>
-            <span>{t('common.siteName')}</span>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <span className="text-xl transition-transform group-hover:scale-110">📄</span>
+            <span className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-white">
+              PDFToolBox
+            </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition">
+          <nav className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
               {t('nav.home')}
             </Link>
-            <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition">
+            <Link to="/about" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
               {t('nav.about')}
             </Link>
-            <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition">
+            <Link to="/contact" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
               {t('nav.contact')}
             </Link>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-gray-600 dark:text-gray-300"
+              className="md:hidden p-2 text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
             >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
         {mobileOpen && (
-          <nav className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col gap-3">
-              <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 py-2">
-                {t('nav.home')}
-              </Link>
-              <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 py-2">
-                {t('nav.about')}
-              </Link>
-              <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 py-2">
-                {t('nav.contact')}
-              </Link>
-              <Link to="/privacy-policy" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 py-2">
-                {t('nav.privacy')}
-              </Link>
-              <Link to="/terms-of-service" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 py-2">
-                {t('nav.terms')}
-              </Link>
+          <nav className="md:hidden py-4 border-t border-neutral-100 dark:border-neutral-800">
+            <div className="flex flex-col gap-1">
+              {[
+                { to: '/', label: t('nav.home') },
+                { to: '/about', label: t('nav.about') },
+                { to: '/contact', label: t('nav.contact') },
+                { to: '/privacy-policy', label: t('nav.privacy') },
+                { to: '/terms-of-service', label: t('nav.terms') },
+              ].map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white py-2.5 px-3 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </nav>
         )}

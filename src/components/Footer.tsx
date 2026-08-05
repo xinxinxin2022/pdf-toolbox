@@ -6,71 +6,69 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">📄</span>
-              <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                {t('common.siteName')}
+    <footer className="border-t border-neutral-100 dark:border-neutral-800">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <Link to="/" className="flex items-center gap-2 mb-4">
+              <span className="text-lg">📄</span>
+              <span className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-white">
+                PDFToolBox
               </span>
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            </Link>
+            <p className="text-[14px] text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-xs">
               {t('footer.description')}
             </p>
-            <div className="flex gap-3 mt-4">
-              <span className="inline-flex items-center gap-1 text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded">
-                🔒 {t('common.privacy')}
-              </span>
-              <span className="inline-flex items-center gap-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-1 rounded">
-                💎 {t('common.free')}
-              </span>
-            </div>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-[13px] font-semibold text-neutral-900 dark:text-white uppercase tracking-wider mb-4">
               {t('footer.quickLinks')}
             </h3>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">{t('nav.about')}</Link></li>
-              <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">{t('nav.contact')}</Link></li>
-              <li><Link to="/privacy-policy" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">{t('nav.privacy')}</Link></li>
-              <li><Link to="/terms-of-service" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">{t('nav.terms')}</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-              {t('footer.tools')}
-            </h3>
-            <ul className="space-y-2 text-sm">
-              {tools.slice(0, 6).map(tool => (
-                <li key={tool.slug}>
-                  <Link
-                    to={`/tool/${tool.slug}`}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600"
-                  >
-                    {tool.icon} {t(tool.nameKey)}
+            <ul className="space-y-2.5">
+              {[
+                { to: '/about', label: t('nav.about') },
+                { to: '/contact', label: t('nav.contact') },
+                { to: '/privacy-policy', label: t('nav.privacy') },
+                { to: '/terms-of-service', label: t('nav.terms') },
+              ].map(link => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-[14px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
+                    {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Tools */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-[13px] font-semibold text-neutral-900 dark:text-white uppercase tracking-wider mb-4">
               {t('footer.tools')}
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2.5">
+              {tools.slice(0, 6).map(tool => (
+                <li key={tool.slug}>
+                  <Link to={`/tool/${tool.slug}`} className="text-[14px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
+                    {t(tool.nameKey)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* More Tools */}
+          <div>
+            <h3 className="text-[13px] font-semibold text-neutral-900 dark:text-white uppercase tracking-wider mb-4">
+              &nbsp;
+            </h3>
+            <ul className="space-y-2.5">
               {tools.slice(6).map(tool => (
                 <li key={tool.slug}>
-                  <Link
-                    to={`/tool/${tool.slug}`}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600"
-                  >
-                    {tool.icon} {t(tool.nameKey)}
+                  <Link to={`/tool/${tool.slug}`} className="text-[14px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
+                    {t(tool.nameKey)}
                   </Link>
                 </li>
               ))}
@@ -78,8 +76,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-500 dark:text-gray-400">
-          {t('footer.copyright')}
+        {/* Bottom */}
+        <div className="mt-14 pt-6 border-t border-neutral-100 dark:border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-[13px] text-neutral-400 dark:text-neutral-500">
+            {t('footer.copyright')}
+          </p>
+          <div className="flex items-center gap-4">
+            <span className="text-[13px] text-neutral-400 dark:text-neutral-500 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              All processing happens locally
+            </span>
+          </div>
         </div>
       </div>
     </footer>

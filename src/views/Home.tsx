@@ -1,92 +1,77 @@
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Hero3D from '@/components/Hero3D';
 import SearchBar from '@/components/SearchBar';
 import ToolCard from '@/components/ToolCard';
 import SEOHead from '@/components/SEOHead';
-import { tools, getToolsByCategory } from '@/tools/registry';
-import { Shield, Zap, Globe, DollarSign } from 'lucide-react';
+import { getToolsByCategory } from '@/tools/registry';
+import { Shield, Zap, Globe, Lock } from 'lucide-react';
 
 export default function Home() {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const displayTools = getToolsByCategory(activeCategory);
 
-  const { t: _ } = useTranslation();
-
   return (
     <div>
       <SEOHead
-        title={t('common.siteName') + ' - ' + t('common.tagline')}
+        title="PDFToolBox — Free Online PDF Tools"
         description={t('common.heroSubtitle')}
       />
 
       {/* Hero */}
       <section className="relative">
-        <div className="relative h-[500px] md:h-[550px]">
+        <div className="relative h-[520px] md:h-[580px]">
           <Hero3D />
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="text-center px-4 max-w-3xl">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+            <div className="text-center px-6 max-w-3xl mx-auto">
+              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-neutral-900 dark:text-white mb-5 leading-[1.05]">
                 {t('common.heroTitle')}
               </h1>
-              <p className="text-lg md:text-xl text-white/90 mb-8 drop-shadow">
+              <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 mb-10 max-w-xl mx-auto leading-relaxed font-normal">
                 {t('common.heroSubtitle')}
               </p>
               <SearchBar />
-              <div className="flex flex-wrap justify-center gap-4 mt-8">
-                <span className="flex items-center gap-1.5 text-white/90 text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <Shield size={16} /> {t('common.privacy')}
-                </span>
-                <span className="flex items-center gap-1.5 text-white/90 text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <DollarSign size={16} /> {t('common.free')}
-                </span>
-                <span className="flex items-center gap-1.5 text-white/90 text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <Globe size={16} /> {t('common.noInstall')}
-                </span>
+              <div className="flex flex-wrap justify-center gap-6 mt-10">
+                {[
+                  { icon: Lock, text: t('common.privacy') },
+                  { icon: Zap, text: t('common.free') },
+                  { icon: Globe, text: t('common.noInstall') },
+                ].map((item, i) => (
+                  <span key={i} className="flex items-center gap-2 text-[14px] text-neutral-500 dark:text-neutral-400">
+                    <item.icon size={15} className="text-neutral-400 dark:text-neutral-500" />
+                    {item.text}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Badges */}
-      <section className="py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: DollarSign, title: t('home.trustFree'), desc: t('home.trustFreeDesc'), color: 'text-green-500' },
-              { icon: Shield, title: t('home.trustPrivacy'), desc: t('home.trustPrivacyDesc'), color: 'text-blue-500' },
-              { icon: Globe, title: t('home.trustNoInstall'), desc: t('home.trustNoInstallDesc'), color: 'text-purple-500' },
-              { icon: Zap, title: t('home.trustFast'), desc: t('home.trustFastDesc'), color: 'text-orange-500' },
-            ].map((item, i) => (
-              <div key={i} className="text-center p-4">
-                <item.icon className={`mx-auto mb-3 ${item.color}`} size={32} />
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{item.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Tools Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
-            {t('common.allTools')}
-          </h2>
+      <section className="py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Section header */}
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white mb-3">
+              {t('common.allTools')}
+            </h2>
+            <p className="text-neutral-500 dark:text-neutral-400 text-lg">
+              12 professional PDF tools, all running in your browser.
+            </p>
+          </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {/* Category Filter — minimal pill tabs */}
+          <div className="flex justify-center gap-1 mb-12 bg-neutral-100 dark:bg-neutral-800/50 rounded-full p-1 max-w-md mx-auto">
             {['all', 'convert', 'edit', 'security'].map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+                className={`flex-1 px-4 py-2 rounded-full text-[14px] font-medium transition-all duration-200 ${
                   activeCategory === cat
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-sm'
+                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300'
                 }`}
               >
                 {t(`categories.${cat}`)}
@@ -94,7 +79,8 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {displayTools.map(tool => (
               <ToolCard key={tool.slug} tool={tool} />
             ))}
@@ -102,15 +88,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust Section — minimal */}
+      <section className="py-20 md:py-28 border-t border-neutral-100 dark:border-neutral-800">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+            {[
+              { icon: Lock, title: t('home.trustPrivacy'), desc: t('home.trustPrivacyDesc') },
+              { icon: Zap, title: t('home.trustFast'), desc: t('home.trustFastDesc') },
+              { icon: Shield, title: t('home.trustFree'), desc: t('home.trustFreeDesc') },
+            ].map((item, i) => (
+              <div key={i} className="text-center md:text-left">
+                <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                  <item.icon size={20} className="text-neutral-600 dark:text-neutral-300" />
+                </div>
+                <h3 className="text-[17px] font-semibold text-neutral-900 dark:text-white mb-1.5 tracking-tight">{item.title}</h3>
+                <p className="text-[15px] text-neutral-500 dark:text-neutral-400 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* SEO Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+      <section className="py-20 md:py-28 border-t border-neutral-100 dark:border-neutral-800">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white mb-6 text-center">
             {t('home.whyTitle')}
           </h2>
-          <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-400 leading-relaxed">
-            <p>{t('home.whyText')}</p>
-          </div>
+          <p className="text-neutral-500 dark:text-neutral-400 leading-[1.8] text-[16px]">
+            {t('home.whyText')}
+          </p>
         </div>
       </section>
     </div>

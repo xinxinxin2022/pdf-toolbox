@@ -12,17 +12,30 @@ export default function ToolCard({ tool }: ToolCardProps) {
   return (
     <Link
       to={`/tool/${tool.slug}`}
-      className="group block bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="group block rounded-2xl p-6 card-hover bg-white dark:bg-neutral-900"
     >
-      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${tool.gradient} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
+      {/* Icon */}
+      <div className="text-3xl mb-5 transition-transform group-hover:scale-110 duration-200">
         {tool.icon}
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition">
+
+      {/* Name */}
+      <h3 className="text-[17px] font-semibold text-neutral-900 dark:text-white mb-1.5 tracking-tight">
         {t(tool.nameKey)}
       </h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+
+      {/* Description */}
+      <p className="text-[15px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
         {t(tool.shortDescKey)}
       </p>
+
+      {/* Arrow indicator */}
+      <div className="mt-4 flex items-center gap-1 text-[13px] font-medium text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-white transition">
+        <span>Open</span>
+        <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
     </Link>
   );
 }
