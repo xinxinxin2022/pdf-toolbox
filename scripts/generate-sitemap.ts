@@ -52,6 +52,7 @@ const blogSlugs = [
   'how-to-add-watermark-to-pdf',
   'how-to-convert-scanned-pdf-to-editable-text',
   'pdf-compression-myths-debunked',
+  '10-ways-to-improve-your-pdf-workflow-in-2026',
 ];
 
 const blogPages = blogSlugs.map(slug => ({
