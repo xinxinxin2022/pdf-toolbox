@@ -10,7 +10,7 @@ export default function TermsOfService() {
       <SEOHead
         title={`${t('terms.title')} - PDFToolBox`}
         description="PDFToolBox Terms of Service - Free online PDF tools with 100% privacy."
-        canonical="https://pdf-toolbox.asia/#/terms-of-service"
+        canonical="https://pdf-toolbox.asia/terms-of-service"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">

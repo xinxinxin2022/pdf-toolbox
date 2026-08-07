@@ -33,7 +33,8 @@ export default function AddPageNumbers() {
         const margin = 40;
         let x: number, y: number;
 
-        const [vPos, hPos] = position.split('-');
+        const pos = position || 'bottom-center';
+        const [vPos, hPos] = pos.split('-');
         y = vPos === 'bottom' ? margin : height - margin;
         if (hPos === 'left') x = margin;
         else if (hPos === 'right') x = width - margin - textWidth;

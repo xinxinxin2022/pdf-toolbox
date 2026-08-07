@@ -11,7 +11,7 @@ export default function Contact() {
       <SEOHead
         title={`${t('contact.title')} - PDFToolBox`}
         description="Contact PDFToolBox team. We're here to help with questions, feedback, and feature requests."
-        canonical="https://pdf-toolbox.asia/#/contact"
+        canonical="https://pdf-toolbox.asia/contact"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
@@ -24,7 +24,7 @@ export default function Contact() {
             <Mail className="text-primary-600" size={24} />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Email Us</h2>
           </div>
-          <p className="text-primary-700 dark:text-primary-300">hello@pdftoolbox.asia</p>
+          <p className="text-primary-700 dark:text-primary-300">ben357753@163.com</p>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">We typically respond within 48 hours.</p>
         </div>
 

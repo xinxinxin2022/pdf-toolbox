@@ -3,16 +3,24 @@
 <head>
   <meta charset="utf-8">
   <title>PDFToolBox - Redirecting...</title>
-  <meta http-equiv="refresh" content="0; url=/#/">
-  <link rel="canonical" href="https://pdf-toolbox.asia/" />
+  <script>
+    // GitHub Pages SPA redirect for history mode
+    // Captures the requested path and redirects to index.html with the path as a query parameter.
+    // main.tsx will read this parameter and restore the correct URL via history.replaceState.
+    var l = window.location;
+    if (l.search.match(/^[?&]_path=/)) {
+      // Already a redirect loop — fall through to index.html
+    } else {
+      var path = l.pathname;
+      var sep = l.search ? '&' : '?';
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        '/?_path=' + encodeURIComponent(path) + sep + l.search.replace(/^[?&]/, '') + l.hash
+      );
+    }
+  </script>
 </head>
 <body>
-  <p>Redirecting to <a href="/#/">PDFToolBox</a>...</p>
-  <script>
-    // Preserve the path for SPA routing
-    var pathSegmentsToKeep = 0;
-    var l = window.location;
-    l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/#/' + l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/'));
-  </script>
+  <p>Loading...</p>
 </body>
 </html>

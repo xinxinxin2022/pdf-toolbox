@@ -46,6 +46,12 @@ export default function Header() {
             <Link to="/contact" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
               {t('nav.contact')}
             </Link>
+            <Link to="/faq" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
+              FAQ
+            </Link>
+            <Link to="/blog" className="text-[15px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition">
+              Blog
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -67,6 +73,8 @@ export default function Header() {
                 { to: '/', label: t('nav.home') },
                 { to: '/about', label: t('nav.about') },
                 { to: '/contact', label: t('nav.contact') },
+                { to: '/faq', label: 'FAQ' },
+                { to: '/blog', label: 'Blog' },
                 { to: '/privacy-policy', label: t('nav.privacy') },
                 { to: '/terms-of-service', label: t('nav.terms') },
               ].map(link => (

@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import FileUpload from '@/components/FileUpload';
 import { Download, Loader2 } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import JSZip from 'jszip';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = PdfWorker;
 
 export default function PdfToJpg() {
   const { t } = useTranslation();

@@ -31,6 +31,8 @@ export default function Footer() {
               {[
                 { to: '/about', label: t('nav.about') },
                 { to: '/contact', label: t('nav.contact') },
+                { to: '/faq', label: 'FAQ' },
+                { to: '/blog', label: 'Blog' },
                 { to: '/privacy-policy', label: t('nav.privacy') },
                 { to: '/terms-of-service', label: t('nav.terms') },
               ].map(link => (

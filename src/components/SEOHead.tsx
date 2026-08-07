@@ -12,7 +12,7 @@ interface SEOHeadProps {
 export default function SEOHead({ title, description, canonical, ogType = 'website', jsonLd }: SEOHeadProps) {
   const { i18n } = useTranslation();
   const baseUrl = 'https://pdf-toolbox.asia';
-  const canonicalUrl = canonical || `${baseUrl}${i18n.language === 'en' ? '/' : '/'}#${window.location.hash.slice(1) || '/'}`;
+  const canonicalUrl = canonical || `${baseUrl}${window.location.pathname}`;
 
   return (
     <Helmet>

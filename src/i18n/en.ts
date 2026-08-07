@@ -3,7 +3,7 @@ const en = {
     siteName: 'PDFToolBox',
     tagline: 'Free Online PDF Tools',
     heroTitle: 'All-in-One PDF Tools',
-    heroSubtitle: 'Merge, split, compress, convert — all in your browser. 100% private, no upload required.',
+    heroSubtitle: 'Merge, split, compress, convert — all in your browser. 100% private.',
     searchPlaceholder: 'Search tools...',
     upload: 'Upload',
     download: 'Download',
@@ -68,11 +68,11 @@ const en = {
       seoDesc: 'Compress PDF files online for free. Reduce PDF file size without losing quality — no upload required, 100% private and secure.',
     },
     'pdf-to-word': {
-      name: 'PDF to Word',
-      shortDesc: 'Convert PDF to editable Word document',
-      description: 'Convert your PDF files to Word documents for easy editing. Our tool extracts text content from PDFs and creates editable Word-compatible files. While client-side conversion has limitations compared to server-based tools, our solution provides reliable text extraction without compromising your privacy.',
-      seoTitle: 'Convert PDF to Word Online Free - No Upload Required | PDFToolBox',
-      seoDesc: 'Convert PDF to Word online for free. Extract text from PDFs into editable documents — no upload, no registration, 100% private.',
+      name: 'PDF Text Extraction',
+      shortDesc: 'Extract text content from PDF files',
+      description: 'Extract text content from your PDF files for use in Word or other editors. This tool works best with text-based PDFs (created from Word, Google Docs, etc.) — it extracts the text layer directly from the PDF. Note: scanned/image-based PDFs are not supported, as they require OCR technology. Formatting, images, and complex layouts are not preserved in the output.',
+      seoTitle: 'Extract Text from PDF Online Free - PDF Text Extractor | PDFToolBox',
+      seoDesc: 'Extract text from PDF files online for free. Works with text-based PDFs — no upload, no registration, 100% private. Scanned PDFs not supported.',
     },
     'pdf-to-jpg': {
       name: 'PDF to JPG',
@@ -144,7 +144,7 @@ const en = {
     merge: ['Upload your PDF files using drag & drop or file browser', 'Rearrange the file order by dragging the cards', 'Click "Merge PDF" to combine all files', 'Download your merged PDF file'],
     split: ['Upload your PDF file', 'Select page ranges or individual pages to extract', 'Click "Split PDF" to process', 'Download the split PDF files'],
     compress: ['Upload your PDF file', 'Click "Compress PDF" to start processing', 'Wait for optimization to complete', 'Download your compressed PDF'],
-    'pdf-to-word': ['Upload your PDF file', 'Click "Convert to Word" to start', 'Wait for text extraction to complete', 'Download the Word-compatible document'],
+    'pdf-to-word': ['Upload your text-based PDF file', 'Click "Extract Text" to start', 'Text content is extracted from each page', 'Download the Word-compatible document'],
     'pdf-to-jpg': ['Upload your PDF file', 'Click "Convert to JPG" to start', 'Each page will be converted to an image', 'Download images individually or as ZIP'],
     'jpg-to-pdf': ['Upload your JPG/PNG image files', 'Arrange images in desired order', 'Click "Convert to PDF" to create document', 'Download your new PDF file'],
     'pdf-to-excel': ['Upload your PDF file', 'Click "Extract to Excel" to start', 'Text data will be extracted from tables', 'Download the CSV file (open in Excel)'],
@@ -158,7 +158,7 @@ const en = {
     merge: ['Combine unlimited PDF files', 'Drag & drop to reorder files', 'Preview before merging', '100% client-side processing', 'No file size limit', 'Maintain original quality'],
     split: ['Extract specific page ranges', 'Split into individual pages', 'Batch page extraction', 'Preview pages before splitting', 'No file size limit', '100% private processing'],
     compress: ['Reduce file size significantly', 'Maintain acceptable quality', 'Fast processing speed', 'No upload required', 'Works offline after loading', 'Batch compression support'],
-    'pdf-to-word': ['Extract text from PDFs', 'Create editable documents', 'No upload required', 'Preserve text formatting', 'Support multiple pages', 'Fast conversion speed'],
+    'pdf-to-word': ['Extract text content', 'Text-based PDF support', 'No upload required', 'Multi-page extraction', 'Word-compatible output', 'Fast processing speed'],
     'pdf-to-jpg': ['High-quality image export', 'Convert all pages at once', 'Individual or batch download', 'Adjustable image quality', 'ZIP download for multiple pages', 'No upload required'],
     'jpg-to-pdf': ['Support JPG, PNG, and more', 'Arrange images in order', 'Custom page size and margins', 'High-quality output', 'Batch image processing', 'No file size limit'],
     'pdf-to-excel': ['Extract tabular data', 'CSV output (Excel compatible)', 'Handle multi-page tables', 'No upload required', 'Preserve data structure', 'Fast extraction speed'],
@@ -172,7 +172,7 @@ const en = {
     merge: 'PDFToolBox Merge PDF is the fastest way to combine PDF files online. Unlike other tools, we process everything in your browser — your files never leave your device. No registration, no watermarks, no file size limits. Just drag, drop, and merge.',
     split: 'Need to extract specific pages from a PDF? PDFToolBox Split gives you precise control over page extraction. Process pages locally in your browser with zero upload. Split by ranges, extract individual pages, or separate sections — all for free.',
     compress: 'PDFToolBox Compress reduces your PDF file size without requiring server uploads. Perfect for email attachments and web forms. Our client-side optimization ensures your documents stay private while becoming easier to share.',
-    'pdf-to-word': 'PDFToolBox PDF to Word converter extracts text from your PDFs into editable documents, all processed locally. While client-side conversion has limitations, it provides reliable text extraction with complete privacy — your documents never leave your device.',
+    'pdf-to-word': 'PDFToolBox Text Extraction pulls text from your PDFs for use in other applications. It works best with text-based PDFs created from documents (Word, Google Docs, etc.). Scanned PDFs, image-based PDFs, and complex layouts are not supported — those require server-side OCR tools. All processing happens locally in your browser for complete privacy.',
     'pdf-to-jpg': 'PDFToolBox PDF to JPG renders each page as a high-quality image using your browser\'s rendering engine. Export individual pages or download all as a ZIP archive. No upload, no quality compromise, complete privacy.',
     'jpg-to-pdf': 'PDFToolBox JPG to PDF combines your images into professional PDF documents. Arrange photos, screenshots, or graphics in any order, customize layout, and create polished PDFs — all without uploading a single file.',
     'pdf-to-excel': 'PDFToolBox PDF to Excel extracts structured data from your PDFs into spreadsheet-compatible format. Ideal for text-based PDFs with tables and structured content. Process everything locally for complete data privacy.',
@@ -200,9 +200,10 @@ const en = {
       { q: 'Is there a file size limit?', a: 'There is no hard limit, but very large files (over 100MB) may be slow to process in the browser.' },
     ],
     'pdf-to-word': [
-      { q: 'How accurate is the PDF to Word conversion?', a: 'Client-side conversion focuses on text extraction. For scanned PDFs or complex layouts, results may vary. Text-based PDFs generally convert well.' },
-      { q: 'Will formatting be preserved?', a: 'Basic text formatting is preserved. Complex layouts, images, and advanced formatting may not be perfectly maintained since this runs entirely in your browser.' },
-      { q: 'What format is the output?', a: 'The output is a text-based document compatible with Microsoft Word and other word processors.' },
+      { q: 'What type of PDFs does this support?', a: 'This tool works with text-based PDFs — PDFs created from Word, Google Docs, or similar applications that have an embedded text layer. Scanned PDFs and image-based PDFs are not supported.' },
+      { q: 'Why does my PDF show no text?', a: 'If your PDF is a scanned document or image-based, it doesn\'t contain a text layer. This tool cannot extract text from such PDFs. You would need OCR software for scanned documents.' },
+      { q: 'Is formatting preserved?', a: 'No. This tool extracts raw text only. Images, tables, fonts, colors, and layout are not preserved. The output is plain text in a Word-compatible format.' },
+      { q: 'What format is the output?', a: 'The output is an HTML file saved as .doc, which can be opened in Microsoft Word. It contains the extracted text organized by page.' },
     ],
     'pdf-to-jpg': [
       { q: 'What image quality will I get?', a: 'Images are rendered at high resolution (150 DPI by default). You can adjust the quality before conversion.' },
@@ -303,7 +304,7 @@ We may update this Privacy Policy from time to time. Changes will be posted on t
 
 ### 8. Contact Us
 
-If you have questions about this Privacy Policy, please contact us at privacy@pdftoolbox.asia.
+If you have questions about this Privacy Policy, please contact us at ben357753@163.com.
 
 ### 9. Summary
 
@@ -381,7 +382,7 @@ These Terms shall be governed by and construed in accordance with applicable law
 
 ### 13. Contact
 
-For questions about these Terms, please contact us at legal@pdftoolbox.asia.
+For questions about these Terms, please contact us at ben357753@163.com.
 
 By using PDFToolBox, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
     `,
@@ -463,13 +464,13 @@ We'd love to hear from you! Whether you have a question, feedback, bug report, o
 
 ### Get in Touch
 
-**General Inquiries**: hello@pdftoolbox.asia
+**General Inquiries**: ben357753@163.com
 
-**Privacy Concerns**: privacy@pdftoolbox.asia
+**Privacy Concerns**: ben357753@163.com
 
-**Legal Matters**: legal@pdftoolbox.asia
+**Legal Matters**: ben357753@163.com
 
-**Bug Reports**: bugs@pdftoolbox.asia
+**Bug Reports**: ben357753@163.com
 
 ### Response Time
 
@@ -519,7 +520,7 @@ Found something that doesn't work? Please include:
 
 ### Business Inquiries
 
-For partnerships, advertising, or other business inquiries: business@pdftoolbox.asia
+For partnerships, advertising, or other business inquiries: ben357753@163.com
 
 ### Follow Us
 
@@ -536,6 +537,45 @@ Thank you for being part of the PDFToolBox community!
     title: 'Page Not Found',
     description: 'The page you\'re looking for doesn\'t exist.',
     backHome: 'Go to Homepage',
+  },
+  faqPage: {
+    title: 'Frequently Asked Questions',
+    subtitle: 'Everything you need to know about PDFToolBox. Can\'t find what you\'re looking for? Contact us.',
+    seoTitle: 'FAQ - Free Online PDF Tools Questions | PDFToolBox',
+    seoDesc: 'Find answers to common questions about PDFToolBox — free online PDF tools. Learn about privacy, features, file limits, and more.',
+    categories: {
+      general: 'General',
+      privacy: 'Privacy & Security',
+      tools: 'Tools & Features',
+      files: 'Files & Limits',
+      technical: 'Technical',
+    },
+    items: [
+      { q: 'Is PDFToolBox completely free?', a: 'Yes! All PDFToolBox tools are 100% free to use. There are no hidden charges, no premium tiers, and no feature locks. We keep the site running through unobtrusive advertising.' },
+      { q: 'Do I need to create an account?', a: 'No account needed. You can start using any tool immediately — no email, no registration, no hassle.' },
+      { q: 'Are my files safe?', a: 'Absolutely. All PDF processing happens directly in your browser. Your files never leave your device and are never uploaded to any server. We literally cannot see your documents.' },
+      { q: 'What browsers are supported?', a: 'PDFToolBox works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend keeping your browser updated for the best experience.' },
+      { q: 'Can I use PDFToolBox offline?', a: 'Once loaded, most tools can work without an internet connection since processing happens locally. However, you need internet to initially load the site.' },
+      { q: 'Is there a file size limit?', a: 'There is no hard limit, but very large files (over 100MB) may be slow depending on your device\'s capabilities. For best results, we recommend files under 50MB.' },
+      { q: 'What is the difference between merge and split?', a: 'Merge combines multiple PDF files into a single document. Split does the opposite — it takes one PDF and extracts pages into separate files, or divides the document into sections.' },
+      { q: 'Does compressing a PDF reduce quality?', a: 'Our compression tool optimizes the PDF internally to reduce file size while maintaining acceptable quality. Most users won\'t notice a visual difference, though very aggressive compression may slightly reduce image quality.' },
+      { q: 'Can I convert scanned PDFs to Word?', a: 'Our PDF to Word tool extracts text from text-based PDFs. Scanned documents (images of text) require OCR technology, which is not currently supported. We plan to add OCR in the future.' },
+      { q: 'How does PDF to JPG conversion work?', a: 'Each page of your PDF is rendered in your browser using PDF.js, then exported as a high-quality JPG image. You can download pages individually or as a ZIP archive.' },
+      { q: 'Can I add a watermark to specific pages only?', a: 'Yes! Our watermark tool lets you choose which pages receive the watermark. You can apply it to all pages or select specific ones.' },
+      { q: 'What does the unlock tool do?', a: 'The unlock tool removes owner-level restrictions from PDFs (printing, editing, copying limits). It cannot remove user-level encryption passwords that require a password to open the file.' },
+      { q: 'Is unlocking a PDF legal?', a: 'Yes, removing restrictions from PDFs you own is legal. Just make sure you have the right to modify the document.' },
+      { q: 'Can I rotate multiple pages at once?', a: 'Yes, the rotate tool lets you select specific pages and rotate them individually, or rotate all pages in the document at once.' },
+      { q: 'How do I add page numbers?', a: 'Upload your PDF, choose the position (top/bottom, left/center/right), set the starting number, and click process. Page numbers will be added to every page.' },
+      { q: 'What formats can I convert to PDF?', a: 'Currently, PDFToolBox supports JPG to PDF (image to PDF) and Word to PDF conversion. We\'re working on adding more input formats.' },
+      { q: 'Can I convert PDF to Excel?', a: 'Yes! Our PDF to Excel tool extracts tabular data from your PDF. For best results, use PDFs with clearly defined tables. Complex layouts may need manual cleanup.' },
+      { q: 'Why is my conversion not perfect?', a: 'Since all processing runs client-side in your browser, some complex conversions (especially PDF to Word/Excel) may have limitations. For best results, use text-based PDFs rather than scanned documents.' },
+      { q: 'Do you store my files after processing?', a: 'No. We never store, access, or transmit your documents. Everything happens in your browser. Once you close the tab or refresh, all file data is gone.' },
+      { q: 'Can I use PDFToolBox on mobile?', a: 'Yes! PDFToolBox is fully responsive and works on smartphones and tablets. The interface adapts to your screen size for easy use on any device.' },
+      { q: 'Are there limits on how many files I can process?', a: 'There are no daily limits or processing caps. Use our tools as much as you need.' },
+      { q: 'How is PDFToolBox different from other PDF tools?', a: 'Three key differences: (1) 100% privacy — files never leave your browser; (2) Completely free — no premium tier, no watermarks; (3) No account required — start using tools instantly.' },
+      { q: 'Can I request a new feature?', a: 'Absolutely! We\'re always looking to improve. Email us at ben357753@163.com with your feature request and we\'ll consider it for future updates.' },
+      { q: 'How do I report a bug?', a: 'Email ben357753@163.com with details: which tool you were using, your browser and version, what you were trying to do, and what happened instead. This helps us fix issues faster.' },
+    ],
   },
 };
 

@@ -33,7 +33,7 @@ export default function ToolPage() {
     '@type': 'WebPage',
     name: t(tool.seoTitleKey),
     description: t(tool.seoDescKey),
-    url: `https://pdf-toolbox.asia/#/tool/${tool.slug}`,
+    url: `https://pdf-toolbox.asia/tool/${tool.slug}`,
   };
 
   return (
@@ -41,7 +41,7 @@ export default function ToolPage() {
       <SEOHead
         title={t(tool.seoTitleKey)}
         description={t(tool.seoDescKey)}
-        canonical={`https://pdf-toolbox.asia/#/tool/${tool.slug}`}
+        canonical={`https://pdf-toolbox.asia/tool/${tool.slug}`}
         jsonLd={jsonLd}
       />
 

@@ -5,9 +5,10 @@
   "description": "Free online PDF tools - 100% private, no upload required",
   "scripts": {
     "dev": "vite",
-    "build": "npm run generate-sitemap && vite build",
+    "build": "npx tsx scripts/generate-pages.ts && vite build && npx tsx scripts/post-build.ts",
     "preview": "vite preview",
     "generate-sitemap": "tsx scripts/generate-sitemap.ts",
+    "generate-pages": "tsx scripts/generate-pages.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

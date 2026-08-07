@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Hero3D from '@/components/Hero3D';
-import SearchBar from '@/components/SearchBar';
 import ToolCard from '@/components/ToolCard';
 import SEOHead from '@/components/SEOHead';
 import { getToolsByCategory } from '@/tools/registry';
@@ -31,7 +30,6 @@ export default function Home() {
               <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 mb-10 max-w-xl mx-auto leading-relaxed font-normal">
                 {t('common.heroSubtitle')}
               </p>
-              <SearchBar />
               <div className="flex flex-wrap justify-center gap-6 mt-10">
                 {[
                   { icon: Lock, text: t('common.privacy') },
