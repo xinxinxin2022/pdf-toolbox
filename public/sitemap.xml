@@ -7,6 +7,42 @@
     <priority>1</priority>
   </url>
   <url>
+    <loc>https://pdf-toolbox.asia/about</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/contact</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/faq</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/privacy-policy</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/terms-of-service</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://pdf-toolbox.asia/tool/merge-pdf</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -20,6 +56,12 @@
   </url>
   <url>
     <loc>https://pdf-toolbox.asia/tool/compress-pdf</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/tool/pdf-to-word</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -61,33 +103,93 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pdf-toolbox.asia/tool/pdf-to-word</loc>
+    <loc>https://pdf-toolbox.asia/blog/ultimate-guide-to-merging-pdf-files</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pdf-toolbox.asia/privacy-policy</loc>
+    <loc>https://pdf-toolbox.asia/blog/pdf-security-protecting-your-documents</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pdf-toolbox.asia/terms-of-service</loc>
+    <loc>https://pdf-toolbox.asia/blog/how-to-reduce-pdf-file-size</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pdf-toolbox.asia/about</loc>
+    <loc>https://pdf-toolbox.asia/blog/pdf-to-word-conversion-complete-guide</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pdf-toolbox.asia/contact</loc>
+    <loc>https://pdf-toolbox.asia/blog/history-of-pdf-format</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/pdf-vs-docx-which-format-to-use</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/what-is-ocr-and-how-does-it-work</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/how-to-fill-pdf-forms-online</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/free-pdf-editing-tools-comparison</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/pdf-a-standards-explained</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/pdf-accessibility-making-documents-for-everyone</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/best-pdf-tools-for-small-business</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/how-to-add-watermark-to-pdf</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/how-to-convert-scanned-pdf-to-editable-text</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-toolbox.asia/blog/pdf-compression-myths-debunked</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
