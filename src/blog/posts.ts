@@ -160,4 +160,14 @@ export const blogPosts: BlogPostMeta[] = [
     tags: ['compression', 'myths', 'quality', 'facts'],
     category: 'Knowledge',
   },
+  {
+    slug: '10-ways-to-improve-your-pdf-workflow-in-2026',
+    titleKey: 'blog.posts.pdfWorkflow2026.title',
+    descKey: 'blog.posts.pdfWorkflow2026.desc',
+    contentKey: 'blog.posts.pdfWorkflow2026.content',
+    date: '2026-08-07',
+    readTime: 10,
+    tags: ['workflow', 'productivity', 'tips', 'pdf', '2026'],
+    category: 'Guides',
+  },
 ];
