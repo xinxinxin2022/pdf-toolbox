@@ -17,7 +17,7 @@ const tools = [
   'add-page-numbers', 'watermark-pdf', 'unlock-pdf',
 ];
 
-const staticPages = ['privacy-policy', 'terms-of-service', 'about', 'contact'];
+const staticPages = ['privacy-policy', 'terms-of-service', 'about', 'contact', 'faq', 'blog'];
 
 // Copy tool pages to dist/tool/{slug}/index.html
 for (const slug of tools) {
