@@ -25,7 +25,6 @@ const staticPages = [
   { path: '/about', priority: 0.7, changefreq: 'monthly' },
   { path: '/contact', priority: 0.5, changefreq: 'monthly' },
   { path: '/faq', priority: 0.6, changefreq: 'monthly' },
-  { path: '/blog', priority: 0.8, changefreq: 'daily' },
   { path: '/privacy-policy', priority: 0.3, changefreq: 'yearly' },
   { path: '/terms-of-service', priority: 0.3, changefreq: 'yearly' },
 ];
@@ -36,32 +35,12 @@ const toolPages = toolSlugs.map(slug => ({
   changefreq: 'monthly',
 }));
 
-const blogSlugs = [
-  'ultimate-guide-to-merging-pdf-files',
-  'pdf-security-protecting-your-documents',
-  'how-to-reduce-pdf-file-size',
-  'pdf-to-word-conversion-complete-guide',
-  'history-of-pdf-format',
-  'pdf-vs-docx-which-format-to-use',
-  'what-is-ocr-and-how-does-it-work',
-  'how-to-fill-pdf-forms-online',
-  'free-pdf-editing-tools-comparison',
-  'pdf-a-standards-explained',
-  'pdf-accessibility-making-documents-for-everyone',
-  'best-pdf-tools-for-small-business',
-  'how-to-add-watermark-to-pdf',
-  'how-to-convert-scanned-pdf-to-editable-text',
-  'pdf-compression-myths-debunked',
-  '10-ways-to-improve-your-pdf-workflow-in-2026',
-];
+// Blog URLs removed temporarily - blog pages are SPA routes without static HTML files
+// Google will discover blog pages through internal links once main pages are indexed
+// const blogSlugs = [...];
+// const blogPages = blogSlugs.map(slug => ({ path: `/blog/${slug}`, ... }));
 
-const blogPages = blogSlugs.map(slug => ({
-  path: `/blog/${slug}`,
-  priority: 0.7,
-  changefreq: 'monthly',
-}));
-
-const allPages = [...staticPages, ...toolPages, ...blogPages];
+const allPages = [...staticPages, ...toolPages];
 
 const today = new Date().toISOString().split('T')[0];
 
