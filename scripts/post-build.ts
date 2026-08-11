@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { blogPosts } from '../src/blog/posts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, '../dist');
@@ -35,6 +36,22 @@ for (const slug of staticPages) {
   if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
   fs.copyFileSync(srcPath, path.join(destDir, 'index.html'));
   console.log(`  ✓ /${slug}/`);
+}
+
+// Copy blog posts to dist/blog/{slug}/index.html
+const blogDir = path.join(pagesDir, 'blog');
+if (fs.existsSync(blogDir)) {
+  for (const post of blogPosts) {
+    const srcPath = path.join(blogDir, `${post.slug}.html`);
+    const destDir = path.join(distDir, 'blog', post.slug);
+    if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+    if (fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, path.join(destDir, 'index.html'));
+      console.log(`  ✓ /blog/${post.slug}/`);
+    }
+  }
+  // Clean up blog source dir
+  fs.rmSync(blogDir, { recursive: true, force: true });
 }
 
 // Copy index page to dist/index-crawler.html (dist/index.html is from Vite)

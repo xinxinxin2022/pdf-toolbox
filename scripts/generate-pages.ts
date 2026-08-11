@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { blogPosts } from '../src/blog/posts';
+import { blogContentEn, blogContentZh } from '../src/blog';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(__dirname, '../public');
@@ -806,6 +808,232 @@ const indexContent = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// ===== Blog Post Template and Markdown Converter =====
+
+/**
+ * Simple markdown to HTML converter for blog content
+ */
+function markdownToHtml(md: string): string {
+  return md
+    .split('\n\n')
+    .map(block => {
+      block = block.trim();
+      if (!block) return '';
+
+      // Headers
+      if (block.startsWith('### ')) return `<h3>${block.slice(4)}</h3>`;
+      if (block.startsWith('## ')) return `<h2>${block.slice(3)}</h2>`;
+      if (block.startsWith('# ')) return `<h1>${block.slice(2)}</h1>`;
+
+      // Blockquote
+      if (block.startsWith('> ')) return `<blockquote>${inlineFormat(block.slice(2))}</blockquote>`;
+
+      // Tables (basic)
+      if (block.includes('|') && block.split('\n').every(line => line.trim().startsWith('|'))) {
+        const lines = block.split('\n').filter(l => l.trim());
+        if (lines.length >= 2) {
+          const headers = lines[0].split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+          const rows = lines.slice(2).map(line => {
+            const cells = line.split('|').filter(c => c.trim()).map(c => `<td>${inlineFormat(c.trim())}</td>`).join('');
+            return `<tr>${cells}</tr>`;
+          }).join('');
+          return `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+        }
+      }
+
+      // Unordered list
+      if (block.startsWith('- ') || block.startsWith('* ')) {
+        const items = block.split('\n').map(line => {
+          const content = line.replace(/^[-*] /, '');
+          return `<li>${inlineFormat(content)}</li>`;
+        }).join('');
+        return `<ul>${items}</ul>`;
+      }
+
+      // Ordered list
+      if (/^\d+\.\s/.test(block)) {
+        const items = block.split('\n').map(line => {
+          const content = line.replace(/^\d+\.\s/, '');
+          return `<li>${inlineFormat(content)}</li>`;
+        }).join('');
+        return `<ol>${items}</ol>`;
+      }
+
+      // Paragraph
+      return `<p>${inlineFormat(block)}</p>`;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
+/**
+ * Format inline markdown: **bold**, *italic*, `code`, [links](url)
+ */
+function inlineFormat(text: string): string {
+  // Code blocks
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Bold
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  // Links
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  return text;
+}
+
+// Blog post data: combine metadata from posts.ts with content from blog index
+const allBlogPosts = blogPosts.map(meta => {
+  const enPost = blogContentEn.posts;
+  const zhPost = blogContentZh.posts;
+
+  // Find the content key by matching title/desc
+  // The content key format is like "blog.posts.pdfWorkflow2026.content"
+  // We need to extract the post key (e.g., "pdfWorkflow2026")
+  const keyMatch = meta.contentKey.match(/blog\.posts\.(\w+)\.content/);
+  if (!keyMatch) return null;
+  const postKey = keyMatch[1];
+
+  const enData = enPost[postKey];
+  const zhData = zhPost[postKey];
+
+  if (!enData) return null;
+
+  return {
+    ...meta,
+    title: enData.title,
+    desc: enData.desc,
+    content: enData.content,
+    titleZh: zhData?.title || enData.title,
+    descZh: zhData?.desc || enData.desc,
+    contentZh: zhData?.content || enData.content,
+  };
+}).filter(Boolean);
+
+// Blog post HTML template
+const blogPostTemplate = (post: any) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${post.title} | PDFToolBox Blog</title>
+  <meta name="description" content="${post.desc}">
+  <link rel="canonical" href="${BASE_URL}/blog/${post.slug}">
+  <meta property="og:title" content="${post.title} | PDFToolBox Blog">
+  <meta property="og:description" content="${post.desc}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${BASE_URL}/blog/${post.slug}">
+  <meta property="og:site_name" content="PDFToolBox">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${post.title} | PDFToolBox Blog">
+  <meta name="twitter:description" content="${post.desc}">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}" crossorigin="anonymous"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.8; color: #111; max-width: 800px; margin: 0 auto; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 30px; }
+    header a { text-decoration: none; color: #2563eb; font-weight: 600; }
+    nav { display: flex; gap: 20px; }
+    nav a { text-decoration: none; color: #555; font-size: 14px; }
+    nav a:hover { color: #2563eb; }
+    .breadcrumb { font-size: 13px; color: #888; margin-bottom: 20px; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #2563eb; }
+    .meta { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+    .category { display: inline-block; background: #eff6ff; color: #2563eb; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .meta span { font-size: 13px; color: #999; }
+    h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.3; }
+    .subtitle { font-size: 17px; color: #666; margin-bottom: 20px; line-height: 1.6; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; }
+    .tags span { background: #f0f0f0; padding: 4px 12px; border-radius: 20px; font-size: 12px; color: #666; }
+    article { font-size: 16px; color: #333; }
+    article h2 { font-size: 22px; margin: 35px 0 15px; color: #111; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+    article h3 { font-size: 18px; margin: 25px 0 12px; color: #222; }
+    article p { margin-bottom: 18px; line-height: 1.8; }
+    article ul, article ol { margin: 15px 0 20px 25px; }
+    article li { margin-bottom: 8px; }
+    article strong { color: #111; }
+    article code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 14px; font-family: monospace; }
+    article blockquote { border-left: 4px solid #2563eb; padding-left: 16px; margin: 20px 0; color: #666; font-style: italic; }
+    article table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    article th, article td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    article th { background: #f9fafb; font-weight: 600; }
+    article a { color: #2563eb; }
+    .cta-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center; }
+    .cta-box p { margin-bottom: 15px; font-size: 15px; }
+    .cta-box a { display: inline-block; background: #2563eb; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    .cta-box a:hover { background: #1d4ed8; }
+    .back-link { display: inline-block; margin-top: 40px; color: #2563eb; text-decoration: none; font-size: 14px; }
+    .back-link:hover { text-decoration: underline; }
+    footer { border-top: 1px solid #eee; margin-top: 50px; padding-top: 20px; font-size: 13px; color: #888; }
+    footer a { color: #888; text-decoration: none; margin-right: 15px; }
+    footer a:hover { color: #2563eb; }
+    @media (max-width: 600px) { h1 { font-size: 24px; } nav { flex-wrap: wrap; } article { font-size: 15px; } }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "${post.title.replace(/"/g, '\\"')}",
+    "description": "${post.desc.replace(/"/g, '\\"')}",
+    "datePublished": "${post.date}",
+    "url": "${BASE_URL}/blog/${post.slug}",
+    "publisher": { "@type": "Organization", "name": "PDFToolBox", "url": "${BASE_URL}" }
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <a href="${BASE_URL}/" style="font-size:20px;text-decoration:none;color:#111;"> <strong>PDFToolBox</strong></a>
+    <nav>
+      <a href="${BASE_URL}/">Home</a>
+      <a href="${BASE_URL}/about">About</a>
+      <a href="${BASE_URL}/contact">Contact</a>
+      <a href="${BASE_URL}/blog">Blog</a>
+    </nav>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="${BASE_URL}/">Home</a> / <a href="${BASE_URL}/blog">Blog</a> / ${post.title}
+  </div>
+
+  <div class="meta">
+    <span class="category">${post.category}</span>
+    <span> Aug ${new Date(post.date).getDate()}, ${new Date(post.date).getFullYear()}</span>
+    <span>⏱️ ${post.readTime} min read</span>
+  </div>
+
+  <h1>${post.title}</h1>
+  <p class="subtitle">${post.desc}</p>
+
+  <div class="tags">
+    ${post.tags.map(tag => `<span>#${tag}</span>`).join('\n    ')}
+  </div>
+
+  <article>
+    ${markdownToHtml(post.content)}
+  </article>
+
+  <div class="cta-box">
+    <p>Need to work with PDF files? Try our free, browser-based PDF tools — no upload required, 100% private.</p>
+    <a href="${BASE_URL}/">Explore PDF Tools →</a>
+  </div>
+
+  <a href="${BASE_URL}/blog" class="back-link">← Back to Blog</a>
+
+  <footer>
+    <p>© 2026 PDFToolBox. All rights reserved.</p>
+    <p style="margin-top:10px;">
+      <a href="${BASE_URL}/privacy-policy">Privacy Policy</a>
+      <a href="${BASE_URL}/terms-of-service">Terms of Service</a>
+      <a href="${BASE_URL}/about">About Us</a>
+      <a href="${BASE_URL}/contact">Contact</a>
+    </p>
+  </footer>
+</body>
+</html>`;
+
+// ===== END Blog Post Template =====
+
 // Write all files
 console.log('Generating static HTML pages for AdSense...');
 
@@ -827,19 +1055,32 @@ for (const page of staticPages) {
   console.log(`  ✓ ${page.slug}.html`);
 }
 
+// Blog posts
+const blogOutDir = path.join(outDir, 'blog');
+if (!fs.existsSync(blogOutDir)) {
+  fs.mkdirSync(blogOutDir, { recursive: true });
+}
+for (const post of allBlogPosts) {
+  const html = blogPostTemplate(post);
+  fs.writeFileSync(path.join(blogOutDir, `${post.slug}.html`), html, 'utf-8');
+  console.log(`  ✓ blog/${post.slug}.html`);
+}
+
 // Update sitemap.xml with clean URLs (no hash)
 const today = new Date().toISOString().split('T')[0];
 const allUrls = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   ...tools.map(t => ({ path: `/tool/${t.slug}`, priority: 0.8, changefreq: 'monthly' })),
   ...staticPages.map(p => ({ path: `/${p.slug}`, priority: 0.5, changefreq: 'monthly' })),
+  { path: '/blog', priority: 0.7, changefreq: 'weekly' },
+  ...allBlogPosts.map(p => ({ path: `/blog/${p.slug}`, priority: 0.6, changefreq: 'monthly', date: p.date })),
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allUrls.map(u => `  <url>
     <loc>${BASE_URL}${u.path}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${u.date || today}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`).join('\n')}
@@ -847,7 +1088,8 @@ ${allUrls.map(u => `  <url>
 `;
 
 fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap, 'utf-8');
-console.log('  ✓ sitemap.xml (updated with clean URLs)');
+console.log('  ✓ sitemap.xml (updated with clean URLs + blog posts)');
 
-console.log(`\nDone! Generated ${tools.length + staticPages.length + 1} HTML pages in ${outDir}`);
+const totalPages = tools.length + staticPages.length + 1 + allBlogPosts.length;
+console.log(`\nDone! Generated ${totalPages} HTML pages in ${outDir}`);
 console.log('These pages are fully readable by AdSense crawlers.');
