@@ -170,4 +170,14 @@ export const blogPosts: BlogPostMeta[] = [
     tags: ['workflow', 'productivity', 'tips', 'pdf', '2026'],
     category: 'Guides',
   },
+  {
+    slug: 'pdf-vs-image-formats-which-to-use',
+    titleKey: 'blog.posts.pdfVsImage.title',
+    descKey: 'blog.posts.pdfVsImage.desc',
+    contentKey: 'blog.posts.pdfVsImage.content',
+    date: '2026-08-11',
+    readTime: 9,
+    tags: ['pdf', 'image', 'jpg', 'png', 'comparison', 'formats'],
+    category: 'Comparison',
+  },
 ];
