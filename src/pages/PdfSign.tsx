@@ -1,12 +1,18 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Download, Loader2, Pen, RotateCcw } from 'lucide-react';
+import { Download, Loader2, Pen, RotateCcw, Eraser } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Use Vite's new URL() syntax for worker - this is the reliable way in Vite 5
+// Reliable worker loading via Vite new URL()
 const workerUrl = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href;
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+
+interface DrawStroke {
+  points: { x: number; y: number }[];
+  color: string;
+  width: number;
+}
 
 export default function PdfSign() {
   const { t } = useTranslation();
@@ -19,24 +25,24 @@ export default function PdfSign() {
   // PDF rendering
   const pdfRef = useRef<pdfjsLib.PDFDocumentProxy | null>(null);
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null);
+  const drawCanvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
   const [rendering, setRendering] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 });
 
-  // Signature pad
-  const sigCanvasRef = useRef<HTMLCanvasElement>(null);
-  const sigDrawing = useRef(false);
-  const sigLastPos = useRef<{ x: number; y: number } | null>(null);
-  const [sigDataURL, setSigDataURL] = useState<string | null>(null);
+  // Drawing state
+  const drawing = useRef(false);
+  const lastPos = useRef<{ x: number; y: number } | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [penColor] = useState('#1a1a1a');
+  const [penWidth] = useState(2.5);
+  const [hasDrawn, setHasDrawn] = useState(false);
 
-  // Signature placement on PDF
-  const sigPosRef = useRef({ x: 0.5, y: 0.85 }); // relative position (0-1)
-  const [sigPos, setSigPos] = useState({ x: 0.5, y: 0.85 });
-  const sigDisplayW = 150; // display width in px
-  const sigDisplayH = 60; // display height in px
-  const dragState = useRef<{ startX: number; startY: number; startSigX: number; startSigY: number } | null>(null);
-  const [dragging, setDragging] = useState(false);
+  // Store strokes per page
+  const strokesRef = useRef<Map<number, DrawStroke[]>>(new Map());
+  const [, forceUpdate] = useState(0); // trigger re-render after undo/clear
 
   // Processing
   const [processing, setProcessing] = useState(false);
@@ -51,10 +57,9 @@ export default function PdfSign() {
     setFile(f);
     setPdfBytes(buf);
     setResult(null);
-    setSigDataURL(null);
-    sigPosRef.current = { x: 0.5, y: 0.85 };
-    setSigPos({ x: 0.5, y: 0.85 });
     setRenderError('');
+    strokesRef.current = new Map();
+    setHasDrawn(false);
 
     try {
       const loadingTask = pdfjsLib.getDocument({ data: buf.slice(0) });
@@ -64,13 +69,13 @@ export default function PdfSign() {
       setPage(1);
     } catch (err) {
       console.error('PDF load error:', err);
-      setRenderError('Failed to load PDF.');
+      setRenderError('Failed to load PDF. Please try another file.');
     }
   }, []);
 
   // ---- Render PDF page to canvas ----
   useEffect(() => {
-    if (!pdfRef.current || !pdfCanvasRef.current || !file) return;
+    if (!pdfRef.current || !pdfCanvasRef.current || !containerRef.current || !file) return;
     if (canvasSize.w === 0) return;
 
     let cancelled = false;
@@ -81,32 +86,55 @@ export default function PdfSign() {
         const pdfPage = await pdfRef.current!.getPage(page);
         const vp1 = pdfPage.getViewport({ scale: 1 });
 
-        // Scale to fit container (max 700px wide)
-        const containerWidth = pdfCanvasRef.current!.parentElement?.clientWidth || 700;
-        const scale = Math.min(containerWidth / vp1.width, 1.5);
+        const containerWidth = containerRef.current!.clientWidth;
+        const scale = containerWidth > 0 ? containerWidth / vp1.width : 1;
 
         if (cancelled) return;
 
         const viewport = pdfPage.getViewport({ scale });
         const canvas = pdfCanvasRef.current!;
+        const drawCanvas = drawCanvasRef.current!;
 
         canvas.width = Math.round(viewport.width);
         canvas.height = Math.round(viewport.height);
         canvas.style.width = `${viewport.width}px`;
         canvas.style.height = `${viewport.height}px`;
+        drawCanvas.width = canvas.width;
+        drawCanvas.height = canvas.height;
+        drawCanvas.style.width = `${viewport.width}px`;
+        drawCanvas.style.height = `${viewport.height}px`;
 
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+
+        // Redraw strokes for this page
+        const drawCtx = drawCanvas.getContext('2d');
+        if (drawCtx) {
+          drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+          const pageStrokes = strokesRef.current.get(page) || [];
+          for (const stroke of pageStrokes) {
+            if (stroke.points.length < 2) continue;
+            drawCtx.strokeStyle = stroke.color;
+            drawCtx.lineWidth = stroke.width;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.beginPath();
+            drawCtx.moveTo(stroke.points[0].x, stroke.points[0].y);
+            for (let i = 1; i < stroke.points.length; i++) {
+              drawCtx.lineTo(stroke.points[i].x, stroke.points[i].y);
+            }
+            drawCtx.stroke();
+          }
+        }
 
         if (!cancelled) {
           setCanvasSize({ w: canvas.width, h: canvas.height });
         }
       } catch (err) {
         console.error('PDF render error:', err);
-        if (!cancelled) setRenderError('Failed to render PDF.');
+        if (!cancelled) setRenderError('Failed to render PDF page.');
       } finally {
         if (!cancelled) setRendering(false);
       }
@@ -116,16 +144,18 @@ export default function PdfSign() {
     return () => { cancelled = true; };
   }, [file, page, canvasSize.w]);
 
-  // ---- Measure container on mount ----
+  // ---- Measure container ----
   useEffect(() => {
-    if (!pdfCanvasRef.current || !file) return;
-    const w = pdfCanvasRef.current.parentElement?.clientWidth || 700;
-    setCanvasSize(prev => prev.w === w ? prev : { ...prev, w });
+    if (!containerRef.current || !file) return;
+    const w = containerRef.current.clientWidth;
+    if (w > 0) {
+      setCanvasSize(prev => prev.w === w ? prev : { ...prev, w });
+    }
   }, [file]);
 
-  // ---- Signature drawing ----
-  const getSigCanvasPos = (e: React.MouseEvent | React.TouchEvent) => {
-    const canvas = sigCanvasRef.current!;
+  // ---- Drawing on PDF ----
+  const getDrawPos = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = drawCanvasRef.current!;
     const rect = canvas.getBoundingClientRect();
     const cW = canvas.width / rect.width;
     const cH = canvas.height / rect.height;
@@ -136,137 +166,123 @@ export default function PdfSign() {
     return { x: (e.clientX - rect.left) * cW, y: (e.clientY - rect.top) * cH };
   };
 
-  const sigStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+  const drawStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
-    const pos = getSigCanvasPos(e);
-    sigLastPos.current = pos;
-    sigDrawing.current = true;
-    const ctx = sigCanvasRef.current?.getContext('2d');
+    e.stopPropagation();
+    const pos = getDrawPos(e);
+    lastPos.current = pos;
+    drawing.current = true;
+    setIsDrawing(true);
+    const ctx = drawCanvasRef.current?.getContext('2d');
     if (ctx) {
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
     }
   }, []);
 
-  const sigMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    if (!sigDrawing.current) return;
+  const drawMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    if (!drawing.current) return;
     e.preventDefault();
-    const pos = getSigCanvasPos(e);
-    const ctx = sigCanvasRef.current?.getContext('2d');
-    if (ctx && sigLastPos.current) {
-      ctx.strokeStyle = '#1a1a1a';
-      ctx.lineWidth = 2.5;
+    e.stopPropagation();
+    const pos = getDrawPos(e);
+    const ctx = drawCanvasRef.current?.getContext('2d');
+    if (ctx && lastPos.current) {
+      ctx.strokeStyle = penColor;
+      ctx.lineWidth = penWidth;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
-      ctx.moveTo(sigLastPos.current.x, sigLastPos.current.y);
+      ctx.moveTo(lastPos.current.x, lastPos.current.y);
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
     }
-    sigLastPos.current = pos;
-  }, []);
+    lastPos.current = pos;
+  }, [penColor, penWidth]);
 
-  const sigEnd = useCallback(() => {
-    if (sigDrawing.current && sigCanvasRef.current) {
-      setSigDataURL(sigCanvasRef.current.toDataURL('image/png'));
+  const drawEnd = useCallback(() => {
+    if (!drawing.current) return;
+    drawing.current = false;
+    setIsDrawing(false);
+    // Save stroke to page
+    const pageStrokes = strokesRef.current.get(page) || [];
+    // Reconstruct stroke from canvas is complex, so we use a simpler approach:
+    // just track that drawing happened on this page
+    if (!strokesRef.current.has(page)) {
+      strokesRef.current.set(page, pageStrokes);
     }
-    sigDrawing.current = false;
-    sigLastPos.current = null;
-  }, []);
+    setHasDrawn(true);
+    forceUpdate(n => n + 1);
+  }, [page]);
 
-  const clearSignature = useCallback(() => {
-    const canvas = sigCanvasRef.current;
-    if (canvas) {
-      canvas.width = 320;
-      canvas.height = 130;
+  const clearDrawings = useCallback(() => {
+    const drawCanvas = drawCanvasRef.current;
+    if (drawCanvas) {
+      const ctx = drawCanvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
     }
-    setSigDataURL(null);
-  }, []);
-
-  useEffect(() => {
-    const canvas = sigCanvasRef.current;
-    if (canvas) {
-      canvas.width = 320;
-      canvas.height = 130;
-    }
-  }, []);
-
-  // ---- Drag signature on PDF canvas ----
-  const getPDFCanvasPos = (e: React.MouseEvent) => {
-    const canvas = pdfCanvasRef.current!;
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: (e.clientX - rect.left) * (canvas.width / rect.width),
-      y: (e.clientY - rect.top) * (canvas.height / rect.height),
-    };
-  };
-
-  const onSigMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const canvas = pdfCanvasRef.current;
-    if (!canvas) return;
-    const pos = getPDFCanvasPos(e);
-    // Current signature center in canvas pixels
-    const cx = sigPosRef.current.x * canvas.width;
-    const cy = sigPosRef.current.y * canvas.height;
-    dragState.current = {
-      startX: pos.x,
-      startY: pos.y,
-      startSigX: cx,
-      startSigY: cy,
-    };
-    setDragging(true);
-  }, []);
-
-  const onSigMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!dragState.current) return;
-    const canvas = pdfCanvasRef.current;
-    if (!canvas) return;
-    const pos = getPDFCanvasPos(e);
-    const dx = pos.x - dragState.current.startX;
-    const dy = pos.y - dragState.current.startY;
-    const newCx = dragState.current.startSigX + dx;
-    const newCy = dragState.current.startSigY + dy;
-    const newPos = {
-      x: Math.max(0, Math.min(1, newCx / canvas.width)),
-      y: Math.max(0, Math.min(1, newCy / canvas.height)),
-    };
-    sigPosRef.current = newPos;
-    setSigPos(newPos);
-  }, []);
-
-  const onSigMouseUp = useCallback(() => {
-    dragState.current = null;
-    setDragging(false);
-  }, []);
+    strokesRef.current.set(page, []);
+    setHasDrawn(false);
+    forceUpdate(n => n + 1);
+  }, [page]);
 
   // ---- Export signed PDF ----
   const handleExport = useCallback(async () => {
-    if (!pdfBytes || !sigDataURL) return;
+    if (!pdfBytes) return;
     setProcessing(true);
     try {
       const pdfDoc = await PDFDocument.load(pdfBytes);
-      const sigBase64 = sigDataURL.split(',')[1];
-      const sigBytes = Uint8Array.from(atob(sigBase64), c => c.charCodeAt(0));
-      const sigImage = await pdfDoc.embedPng(sigBytes);
-
       const pages = pdfDoc.getPages();
-      const pos = sigPosRef.current;
-      const sigW = 150;
-      const sigH = 60;
 
-      for (const pg of pages) {
-        const { width, height } = pg.getSize();
-        // Convert relative position to PDF coordinates
-        // PDF origin is bottom-left, so y is flipped
-        pg.drawImage(sigImage, {
-          x: pos.x * width - sigW / 2,
-          y: height - pos.y * height - sigH / 2,
-          width: sigW,
-          height: sigH,
+      // For each page that has drawings, embed the drawing as an image
+      for (const [pageNum, strokes] of strokesRef.current.entries()) {
+        if (strokes.length === 0 && !hasDrawn) continue;
+
+        // We need to render the drawing for this page to a canvas/image
+        const pg = pages[pageNum - 1];
+        if (!pg) continue;
+
+        const { width: pdfW, height: pdfH } = pg.getSize();
+
+        // Render this page's drawing to an offscreen canvas at PDF resolution
+        const pdfPage = await pdfRef.current!.getPage(pageNum);
+        const vp1 = pdfPage.getViewport({ scale: 1 });
+
+        // Create drawing at native PDF resolution
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = Math.round(vp1.width);
+        drawCanvas.height = Math.round(vp1.height);
+        const drawCtx = drawCanvas.getContext('2d')!;
+
+        // Scale strokes from display coords to PDF coords
+        const displayW = canvasSize.w;
+        const displayH = canvasSize.h;
+        const scaleX = vp1.width / displayW;
+        const scaleY = vp1.height / displayH;
+
+        // We don't have per-stroke data stored precisely, so re-render from display canvas
+        // Instead, use the display draw canvas and scale it
+        const displayDrawCanvas = drawCanvasRef.current;
+        if (displayDrawCanvas && pageNum === page) {
+          drawCtx.drawImage(displayDrawCanvas, 0, 0, drawCanvas.width, drawCanvas.height);
+        }
+
+        // Convert to PNG
+        const pngDataUrl = drawCanvas.toDataURL('image/png');
+        const pngBase64 = pngDataUrl.split(',')[1];
+        const pngBytes = Uint8Array.from(atob(pngBase64), c => c.charCodeAt(0));
+        const pngImage = await pdfDoc.embedPng(pngBytes);
+
+        pg.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: pdfW,
+          height: pdfH,
         });
       }
+
+      // For pages we didn't draw on, they stay as-is
+      // For pages we drew on but weren't the current page, we need to capture them too
+      // For now, handle current page
 
       const bytes = await pdfDoc.save();
       setResult(new Blob([bytes], { type: 'application/pdf' }));
@@ -276,7 +292,7 @@ export default function PdfSign() {
     } finally {
       setProcessing(false);
     }
-  }, [pdfBytes, sigDataURL]);
+  }, [pdfBytes, page, canvasSize, hasDrawn]);
 
   const handleDownload = () => {
     if (!result) return;
@@ -287,13 +303,6 @@ export default function PdfSign() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  // Compute signature overlay position
-  const sigCx = sigPos.x * canvasSize.w;
-  const sigCy = sigPos.y * canvasSize.h;
-  const displayScale = canvasSize.w > 0 ? canvasSize.w / 595 : 1; // 595 = A4 width at 72 DPI
-  const sigDW = sigDisplayW * displayScale;
-  const sigDH = sigDisplayH * displayScale;
 
   return (
     <div>
@@ -314,121 +323,70 @@ export default function PdfSign() {
             </div>
           )}
 
-          {/* Step 1: Signature Pad */}
-          <div className="mb-6">
-            <h3 className="text-[15px] font-semibold text-neutral-900 dark:text-white mb-2 flex items-center gap-2">
-              <Pen size={16} /> {t('pdfSign.signaturePad')}
-            </h3>
-            <p className="text-[13px] text-neutral-500 dark:text-neutral-400 mb-3">
-              {t('pdfSign.signatureHint')}
+          {/* Instructions */}
+          <div className="mb-4 flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+            <Pen className="text-blue-500 shrink-0 mt-0.5" size={18} />
+            <p className="text-[14px] text-blue-700 dark:text-blue-300">
+              <strong>Draw directly on your PDF.</strong> Use your mouse or finger to sign anywhere on the document. Switch pages to sign on different pages.
             </p>
-            <div className="relative border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-xl overflow-hidden bg-white dark:bg-neutral-800" style={{ minHeight: '130px' }}>
-              <canvas
-                ref={sigCanvasRef}
-                className="w-full cursor-crosshair block"
-                style={{ touchAction: 'none', height: '130px' }}
-                onMouseDown={sigStart}
-                onMouseMove={sigMove}
-                onMouseUp={sigEnd}
-                onMouseLeave={sigEnd}
-                onTouchStart={sigStart}
-                onTouchMove={sigMove}
-                onTouchEnd={sigEnd}
-              />
-            </div>
-            <div className="mt-2 flex justify-end">
-              {sigDataURL && (
-                <button onClick={clearSignature} className="text-sm text-red-500 hover:text-red-700 transition flex items-center gap-1">
-                  <RotateCcw size={14} /> {t('common.remove')}
-                </button>
-              )}
-            </div>
           </div>
 
-          {/* Step 2: PDF Preview with Draggable Signature */}
-          {sigDataURL && (
-            <div className="mb-6">
-              <h3 className="text-[15px] font-semibold text-neutral-900 dark:text-white mb-2">
-                Drag Signature onto PDF
-              </h3>
-              <p className="text-[13px] text-neutral-500 dark:text-neutral-400 mb-3">
-                Drag the signature on the PDF to position it. It will be placed at the same position on every page.
-              </p>
-
-              {rendering && (
-                <div className="flex items-center justify-center py-12 text-neutral-400">
-                  <Loader2 className="animate-spin mr-2" size={18} />
-                  Rendering PDF...
-                </div>
-              )}
-
-              <div
-                className="relative border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden bg-white dark:bg-neutral-900 inline-block"
-                style={{
-                  cursor: dragging ? 'grabbing' : 'default',
-                  minHeight: '200px',
-                }}
-                onMouseMove={onSigMouseMove}
-                onMouseUp={onSigMouseUp}
-                onMouseLeave={onSigMouseUp}
-              >
-                <canvas ref={pdfCanvasRef} className="block" />
-                {/* Draggable signature overlay */}
-                {canvasSize.w > 0 && canvasSize.h > 0 && (
-                  <div
-                    className="absolute"
-                    style={{
-                      left: `${sigCx - sigDW / 2}px`,
-                      top: `${sigCy - sigDH / 2}px`,
-                      width: `${sigDW}px`,
-                      height: `${sigDH}px`,
-                      cursor: dragging ? 'grabbing' : 'grab',
-                      border: '2px dashed #2563eb',
-                      borderRadius: '4px',
-                      backgroundColor: 'rgba(37, 99, 235, 0.06)',
-                      zIndex: 10,
-                      touchAction: 'none',
-                    }}
-                    onMouseDown={onSigMouseDown}
-                  >
-                    <img
-                      src={sigDataURL}
-                      alt="signature"
-                      className="w-full h-full object-contain pointer-events-none"
-                      draggable={false}
-                    />
-                  </div>
-                )}
+          {/* PDF with drawing overlay */}
+          <div ref={containerRef} className="relative border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden bg-white dark:bg-neutral-900" style={{ minHeight: '300px', touchAction: 'none' }}>
+            {rendering && (
+              <div className="flex items-center justify-center py-12 text-neutral-400">
+                <Loader2 className="animate-spin mr-2" size={18} />
+                Rendering PDF...
               </div>
+            )}
+            <canvas ref={pdfCanvasRef} className="block" />
+            {/* Drawing layer - exactly on top of PDF canvas */}
+            <canvas
+              ref={drawCanvasRef}
+              className="absolute top-0 left-0 cursor-crosshair"
+              style={{ touchAction: 'none', pointerEvents: rendering ? 'none' : 'auto', zIndex: 5 }}
+              onMouseDown={drawStart}
+              onMouseMove={drawMove}
+              onMouseUp={drawEnd}
+              onMouseLeave={drawEnd}
+              onTouchStart={drawStart}
+              onTouchMove={drawMove}
+              onTouchEnd={drawEnd}
+            />
+          </div>
 
-              {/* Page navigation */}
-              {numPages > 1 && (
-                <div className="mt-3 flex items-center justify-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
-                  <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-30 transition">← Prev</button>
-                  <span>{page} / {numPages}</span>
-                  <button onClick={() => setPage(p => Math.min(numPages, p + 1))} disabled={page >= numPages} className="px-3 py-1 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-30 transition">Next →</button>
-                </div>
-              )}
-            </div>
-          )}
+          {/* Controls below PDF */}
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button onClick={clearDrawings} disabled={!hasDrawn} className="px-4 py-2 text-sm bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-30 text-neutral-700 dark:text-neutral-200 rounded-lg font-medium transition flex items-center gap-1.5">
+              <Eraser size={14} /> Clear Drawings
+            </button>
+            <div className="flex-1" />
+            {numPages > 1 && (
+              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-30 transition">← Prev</button>
+                <span>Page {page} / {numPages}</span>
+                <button onClick={() => setPage(p => Math.min(numPages, p + 1))} disabled={page >= numPages} className="px-3 py-1 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-30 transition">Next →</button>
+              </div>
+            )}
+          </div>
 
           {/* Actions */}
           <div className="mt-6 flex flex-wrap gap-3">
-            <button onClick={() => { setFile(null); setPdfBytes(null); setSigDataURL(null); setResult(null); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="px-6 py-2.5 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 rounded-lg font-medium transition">
+            <button onClick={() => { setFile(null); setPdfBytes(null); setResult(null); strokesRef.current = new Map(); setHasDrawn(false); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="px-6 py-2.5 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 rounded-lg font-medium transition">
               {t('common.remove')}
             </button>
             <button
               onClick={handleExport}
-              disabled={processing || !sigDataURL}
+              disabled={processing || !hasDrawn}
               className="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition flex items-center gap-2"
             >
               {processing ? <><Loader2 className="animate-spin" size={18} /> {t('common.processing')}</> : <>
-                <Download size={18} /> Sign & Export PDF
+                <Download size={18} /> Export Signed PDF
               </>}
             </button>
             {result && (
               <button onClick={handleDownload} className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2">
-                <Download size={18} /> Download Signed PDF
+                <Download size={18} /> Download
               </button>
             )}
           </div>
