@@ -566,11 +566,11 @@ Thank you for being part of the PDFToolBox community!
   },
   pdfSign: {
     signaturePad: 'Draw Your Signature',
-    signatureHint: 'Use your mouse or finger to draw your signature below. It will be placed on every page of your PDF.',
+    signatureHint: 'Use your mouse or finger to draw your signature below. It will be placed at the bottom-center of every page.',
     signPdf: 'Sign PDF',
     drawHere: 'Draw your signature here',
-    placeSignature: 'Place Signature on PDF',
-    dragHint: 'Drag the signature on the PDF preview to position it. It will be placed at the same position on every page.',
+    placeSignature: 'PDF Preview',
+    dragHint: 'Review your document below. Your signature will be placed at the bottom-center of every page.',
   },
   notFound: {
     title: 'Page Not Found',

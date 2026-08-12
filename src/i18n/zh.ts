@@ -304,11 +304,11 @@ const zh: Record<string, any> = {
   },
   pdfSign: {
     signaturePad: '绘制您的签名',
-    signatureHint: '使用鼠标或手指在下方绘制您的签名。它将被放置在 PDF 的每一页上。',
+    signatureHint: '使用鼠标或手指在下方绘制您的签名。签名将放置在每一页的底部中央。',
     signPdf: '签署 PDF',
     drawHere: '在此处绘制您的签名',
-    placeSignature: '在 PDF 上放置签名',
-    dragHint: '在 PDF 预览上拖动签名来定位。它将以相同位置放置在每一页上。',
+    placeSignature: 'PDF 预览',
+    dragHint: '在下方预览您的文档。签名将放置在每一页的底部中央。',
   },
   notFound: {
     title: '页面未找到',
