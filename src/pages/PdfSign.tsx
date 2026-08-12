@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Download, Loader2, Pen, RotateCcw } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
-import PdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = PdfWorker;
+// Use CDN worker for reliable PDF rendering
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 export default function PdfSign() {
   const { t } = useTranslation();
@@ -14,14 +14,15 @@ export default function PdfSign() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null);
   const [renderError, setRenderError] = useState('');
+  const [rendering, setRendering] = useState(false);
 
   // PDF rendering
   const pdfRef = useRef<pdfjsLib.PDFDocumentProxy | null>(null);
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null);
-  const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const pdfWrapperRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
-  const [canvasSize, setCanvasSize] = useState({ w: 800, h: 1131 });
+  const [canvasDims, setCanvasDims] = useState({ w: 0, h: 0 });
 
   // Signature pad
   const sigCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,11 +31,12 @@ export default function PdfSign() {
   const [sigDataURL, setSigDataURL] = useState<string | null>(null);
   const [sigDrawingActive, setSigDrawingActive] = useState(false);
 
-  // Signature placement (use refs to avoid stale closures in drag)
-  const sigPosRef = useRef({ x: 0.5, y: 0.85 }); // relative position (0-1)
+  // Signature placement — use ref for drag, state for render
+  const sigPosRef = useRef({ x: 0.5, y: 0.85 });
   const [sigPos, setSigPos] = useState({ x: 0.5, y: 0.85 });
-  const sigSize = { w: 150, h: 60 }; // px at 72 DPI
-  const dragState = useRef<{ startX: number; startY: number; startSigX: number; startSigY: number } | null>(null);
+  const sigW = 150;
+  const sigH = 60;
+  const dragState = useRef<{ startX: number; startY: number; startSigPxX: number; startSigPxY: number } | null>(null);
   const [dragging, setDragging] = useState(false);
 
   // Processing
@@ -61,66 +63,80 @@ export default function PdfSign() {
       setNumPages(pdf.numPages);
       setPage(1);
     } catch (err) {
-      console.error(err);
-      setRenderError('Failed to load PDF. Please check your file.');
+      console.error('PDF load error:', err);
+      setRenderError('Failed to load PDF.');
     }
   }, []);
 
-  // ---- Render PDF page ----
+  // ---- Render PDF page to canvas ----
   useEffect(() => {
-    if (!file || !pdfRef.current || !pdfCanvasRef.current || !pdfContainerRef.current) return;
+    if (!pdfRef.current || !pdfCanvasRef.current || !pdfWrapperRef.current) return;
+    if (canvasDims.w === 0) return; // wait for container measurement
 
     let cancelled = false;
 
-    const render = async () => {
+    (async () => {
+      setRendering(true);
       try {
-        const pdf = pdfRef.current;
-        const pdfPage = await pdf.getPage(page);
+        const pdfPage = await pdfRef.current!.getPage(page);
         const vp1 = pdfPage.getViewport({ scale: 1 });
 
-        // Calculate scale to fit container width
-        const containerWidth = pdfContainerRef.current!.clientWidth;
-        const scale = containerWidth > 0 ? containerWidth / vp1.width : 1;
+        // Use the wrapper width to determine scale
+        const wrapperWidth = pdfWrapperRef.current!.clientWidth;
+        const scale = wrapperWidth > 0 ? wrapperWidth / vp1.width : 1.2;
 
         if (cancelled) return;
 
         const viewport = pdfPage.getViewport({ scale });
-
-        // Set canvas internal dimensions
         const canvas = pdfCanvasRef.current;
+
+        // Set canvas to actual pixel dimensions
         canvas.width = Math.round(viewport.width);
         canvas.height = Math.round(viewport.height);
-        setCanvasSize({ w: canvas.width, h: canvas.height });
+        // Set CSS display size to match
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
 
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+
+        if (!cancelled) {
+          setCanvasDims({ w: canvas.width, h: canvas.height });
+        }
       } catch (err) {
         console.error('PDF render error:', err);
         if (!cancelled) setRenderError('Failed to render PDF page.');
+      } finally {
+        if (!cancelled) setRendering(false);
       }
-    };
+    })();
 
-    render();
     return () => { cancelled = true; };
-  }, [file, page, canvasSize.w]); // re-render when page changes or container resizes
+  }, [page, file]);
+
+  // ---- Measure container on mount/resize ----
+  useEffect(() => {
+    if (!pdfWrapperRef.current || !file) return;
+    const w = pdfWrapperRef.current.clientWidth;
+    if (w > 0) {
+      setCanvasDims(prev => prev.w === w ? prev : { ...prev, w });
+    }
+  }, [file, numPages]);
 
   // ---- Signature drawing ----
   const getSigCanvasPos = (e: React.MouseEvent | React.TouchEvent) => {
     const canvas = sigCanvasRef.current!;
     const rect = canvas.getBoundingClientRect();
+    const cW = canvas.width / rect.width;
+    const cH = canvas.height / rect.height;
     if ('touches' in e) {
       const touch = e.touches[0] || e.changedTouches[0];
-      return {
-        x: (touch.clientX - rect.left) * (canvas.width / rect.width),
-        y: (touch.clientY - rect.top) * (canvas.height / rect.height),
-      };
+      return { x: (touch.clientX - rect.left) * cW, y: (touch.clientY - rect.top) * cH };
     }
-    return {
-      x: (e.clientX - rect.left) * (canvas.width / rect.width),
-      y: (e.clientY - rect.top) * (canvas.height / rect.height),
-    };
+    return { x: (e.clientX - rect.left) * cW, y: (e.clientY - rect.top) * cH };
   };
 
   const sigStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
@@ -181,9 +197,10 @@ export default function PdfSign() {
   }, []);
 
   // ---- Drag signature on PDF ----
-  const getPDFCanvasPos = (e: React.MouseEvent) => {
+  const getPDFPos = (e: React.MouseEvent) => {
     const canvas = pdfCanvasRef.current!;
     const rect = canvas.getBoundingClientRect();
+    // Position relative to canvas pixel coordinates
     return {
       x: (e.clientX - rect.left) * (canvas.width / rect.width),
       y: (e.clientY - rect.top) * (canvas.height / rect.height),
@@ -195,15 +212,15 @@ export default function PdfSign() {
     e.stopPropagation();
     const canvas = pdfCanvasRef.current;
     if (!canvas) return;
-    const pos = getPDFCanvasPos(e);
-    // Current signature position in canvas pixels
-    const curSigX = sigPosRef.current.x * canvas.width;
-    const curSigY = sigPosRef.current.y * canvas.height;
+    const pos = getPDFPos(e);
+    // Current signature center in canvas pixels
+    const cx = sigPosRef.current.x * canvas.width;
+    const cy = sigPosRef.current.y * canvas.height;
     dragState.current = {
       startX: pos.x,
       startY: pos.y,
-      startSigX: curSigX,
-      startSigY: curSigY,
+      startSigPxX: cx,
+      startSigPxY: cy,
     };
     setDragging(true);
   }, []);
@@ -212,14 +229,14 @@ export default function PdfSign() {
     if (!dragState.current) return;
     const canvas = pdfCanvasRef.current;
     if (!canvas) return;
-    const pos = getPDFCanvasPos(e);
+    const pos = getPDFPos(e);
     const dx = pos.x - dragState.current.startX;
     const dy = pos.y - dragState.current.startY;
-    const newPxX = dragState.current.startSigX + dx;
-    const newPxY = dragState.current.startSigY + dy;
+    const newCx = dragState.current.startSigPxX + dx;
+    const newCy = dragState.current.startSigPxY + dy;
     const newPos = {
-      x: Math.max(0, Math.min(1, newPxX / canvas.width)),
-      y: Math.max(0, Math.min(1, newPxY / canvas.height)),
+      x: Math.max(0, Math.min(1, newCx / canvas.width)),
+      y: Math.max(0, Math.min(1, newCy / canvas.height)),
     };
     sigPosRef.current = newPos;
     setSigPos(newPos);
@@ -241,14 +258,10 @@ export default function PdfSign() {
       const sigImage = await pdfDoc.embedPng(sigBytes);
 
       const pages = pdfDoc.getPages();
-      const sigW = 150;
-      const sigH = 60;
       const pos = sigPosRef.current;
 
       for (const pg of pages) {
         const { width, height } = pg.getSize();
-        // Convert relative position to PDF coordinates
-        // PDF origin is bottom-left, so y is flipped
         pg.drawImage(sigImage, {
           x: pos.x * width - sigW / 2,
           y: height - pos.y * height - sigH / 2,
@@ -277,13 +290,16 @@ export default function PdfSign() {
     URL.revokeObjectURL(url);
   };
 
-  // Compute signature pixel position on canvas
-  const sigPxX = sigPos.x * canvasSize.w;
-  const sigPxY = sigPos.y * canvasSize.h;
-  // Scale signature display size proportionally
-  const sigDisplayScale = canvasSize.w / 595; // 595 is A4 width at 72 DPI
-  const sigPxW = sigSize.w * sigDisplayScale;
-  const sigPxH = sigSize.h * sigDisplayScale;
+  // Compute signature overlay position in CSS pixels
+  const canvas = pdfCanvasRef.current;
+  const cw = canvas ? canvas.width : canvasDims.w;
+  const ch = canvas ? canvas.height : canvasDims.h;
+  const sigCx = sigPos.x * cw;
+  const sigCy = sigPos.y * ch;
+  // Display scale: signature is 150x60 at 72 DPI, scale to match canvas
+  const displayScale = cw > 0 ? cw / 595 : 1; // 595 = A4 width at 72 DPI
+  const sigDW = sigW * displayScale;
+  const sigDH = sigH * displayScale;
 
   return (
     <div>
@@ -326,7 +342,7 @@ export default function PdfSign() {
                 onTouchEnd={sigEnd}
               />
             </div>
-            <div className="mt-2 flex justify-end gap-4">
+            <div className="mt-2 flex justify-end">
               {sigDataURL && (
                 <button onClick={clearSignature} className="text-sm text-red-500 hover:text-red-700 transition flex items-center gap-1">
                   <RotateCcw size={14} /> {t('common.remove')}
@@ -345,29 +361,38 @@ export default function PdfSign() {
                 {t('pdfSign.dragHint')}
               </p>
 
-              {/* PDF Preview with draggable signature */}
+              {/* PDF Preview */}
               <div
-                ref={pdfContainerRef}
+                ref={pdfWrapperRef}
                 className="relative border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden bg-white dark:bg-neutral-900"
-                style={{ cursor: dragging ? 'grabbing' : 'default' }}
+                style={{
+                  cursor: dragging ? 'grabbing' : 'default',
+                  minHeight: '200px',
+                }}
                 onMouseMove={onSigMouseMove}
                 onMouseUp={onSigMouseUp}
                 onMouseLeave={onSigMouseUp}
               >
-                <canvas ref={pdfCanvasRef} className="block w-full" />
-                {/* Signature overlay */}
-                {canvasSize.w > 100 && (
+                {rendering && (
+                  <div className="flex items-center justify-center py-12 text-neutral-400">
+                    <Loader2 className="animate-spin mr-2" size={18} />
+                    Rendering PDF...
+                  </div>
+                )}
+                <canvas ref={pdfCanvasRef} className="block" />
+                {/* Draggable signature overlay */}
+                {cw > 0 && ch > 0 && (
                   <div
                     className="absolute"
                     style={{
-                      left: `${sigPxX - sigPxW / 2}px`,
-                      top: `${sigPxY - sigPxH / 2}px`,
-                      width: `${sigPxW}px`,
-                      height: `${sigPxH}px`,
+                      left: `${sigCx - sigDW / 2}px`,
+                      top: `${sigCy - sigDH / 2}px`,
+                      width: `${sigDW}px`,
+                      height: `${sigDH}px`,
                       cursor: dragging ? 'grabbing' : 'grab',
                       border: '2px dashed #2563eb',
                       borderRadius: '4px',
-                      backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                      backgroundColor: 'rgba(37, 99, 235, 0.06)',
                       zIndex: 10,
                       touchAction: 'none',
                     }}
