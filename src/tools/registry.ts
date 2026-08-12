@@ -3,25 +3,6 @@ import { ToolDefinition } from './types';
 
 export const tools: ToolDefinition[] = [
   {
-    slug: 'edit-pdf',
-    nameKey: 'tools.editor.name',
-    shortDescKey: 'tools.editor.shortDesc',
-    descriptionKey: 'tools.editor.description',
-    icon: '✏️',
-    category: 'edit',
-    keywords: ['edit pdf', 'pdf editor', 'annotate pdf', 'add text to pdf', 'draw on pdf', 'edit pdf online free'],
-    seoTitleKey: 'tools.editor.seoTitle',
-    seoDescKey: 'tools.editor.seoDesc',
-    component: lazy(() => import('@/pages/PdfEditor')),
-    acceptTypes: ['.pdf', 'application/pdf'],
-    multiple: false,
-    featuresKey: 'features.editor',
-    howToUseKey: 'howToUse.editor',
-    whyUseKey: 'whyUse.editor',
-    faqKey: 'faq.editor',
-    gradient: 'from-violet-500 to-fuchsia-500',
-  },
-  {
     slug: 'sign-pdf',
     nameKey: 'tools.sign.name',
     shortDescKey: 'tools.sign.shortDesc',

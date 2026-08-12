@@ -19,26 +19,6 @@ const ADSENSE_ID = 'ca-pub-1812733940760212';
 // Tool data - mirrors src/i18n/en.ts
 const tools = [
   {
-    slug: 'edit-pdf',
-    name: 'Edit PDF',
-    icon: '✏️',
-    category: 'Edit',
-    shortDesc: 'Add text, drawings, and images to your PDF',
-    description: 'Edit your PDF directly in the browser. Add text annotations, freehand drawings, and images to your PDF pages. All processing happens locally — your documents never leave your device. Perfect for annotating documents, marking up forms, or adding visual notes without any server uploads.',
-    seoTitle: 'Edit PDF Online Free - Add Text, Drawings & Images | PDFToolBox',
-    seoDesc: 'Edit PDF files online for free. Add text, draw annotations, and insert images directly in your browser — no upload, 100% private.',
-    features: ['Add text annotations', 'Freehand drawing tools', 'Insert images (PNG/JPG)', 'Multi-page support', 'Undo/redo history', '100% client-side processing'],
-    howToUse: ['Upload your PDF file', 'Use toolbar to add text, drawings, or images', 'Navigate pages and place annotations', 'Click "Export PDF" to download your edited file'],
-    whyUse: 'PDFToolBox Editor lets you annotate PDFs directly in your browser. Add text, drawings, and images without uploading to any server. Perfect for marking up documents, adding notes, or making visual edits. All processing stays on your device for complete privacy.',
-    faq: [
-      { q: 'What can I add to my PDF?', a: 'You can add text annotations, freehand drawings, and images (PNG/JPG) to any page of your PDF.' },
-      { q: 'Is my PDF uploaded anywhere?', a: 'No. All editing happens directly in your browser. Your files never leave your device.' },
-      { q: 'Can I edit existing text in the PDF?', a: 'This tool adds new content (text, drawings, images) on top of your PDF. It does not modify existing text — that requires more advanced PDF editing software.' },
-      { q: 'Can I undo my changes?', a: 'Yes! Use the Undo/Redo buttons in the toolbar to step through your edit history.' },
-    ],
-    keywords: ['edit pdf', 'pdf editor', 'annotate pdf', 'add text to pdf', 'draw on pdf', 'edit pdf online free'],
-  },
-  {
     slug: 'sign-pdf',
     name: 'Sign PDF',
     icon: '✍️',

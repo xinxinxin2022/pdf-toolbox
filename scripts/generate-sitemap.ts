@@ -8,7 +8,6 @@ const baseUrl = 'https://pdf-toolbox.asia';
 
 // Import tool slugs directly (matching src/tools/registry.ts)
 const toolSlugs = [
-  'edit-pdf',
   'sign-pdf',
   'merge-pdf',
   'split-pdf',
