@@ -36,13 +36,26 @@ export default function ToolPage() {
     url: `https://pdf-toolbox.asia/tool/${tool.slug}`,
   };
 
+  const faqJsonLd = faqItems.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item: any) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  } : null;
+
   return (
     <div>
       <SEOHead
         title={t(tool.seoTitleKey)}
         description={t(tool.seoDescKey)}
         canonical={`https://pdf-toolbox.asia/tool/${tool.slug}`}
-        jsonLd={jsonLd}
+        jsonLd={faqJsonLd ? [jsonLd, faqJsonLd] : jsonLd}
       />
 
       <div className="max-w-6xl mx-auto px-6 py-8">

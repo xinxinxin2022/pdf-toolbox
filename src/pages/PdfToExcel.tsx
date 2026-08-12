@@ -91,7 +91,7 @@ export default function PdfToExcel() {
       <div className="mt-6 flex flex-wrap gap-3">
         <button onClick={handleProcess} disabled={files.length === 0 || processing}
           className="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition flex items-center gap-2">
-          {processing ? <><Loader2 className="animate-spin" size={18} /> {t('common.processing')}</> : t('Extract to CSV')}
+          {processing ? <><Loader2 className="animate-spin" size={18} /> {t('common.processing')}</> : 'Extract to CSV'}
         </button>
         {result && (
           <button onClick={handleDownload} className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2">

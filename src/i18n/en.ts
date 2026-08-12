@@ -95,6 +95,20 @@ const en = {
       seoTitle: 'Convert PDF to Excel Online Free - Extract Tables | PDFToolBox',
       seoDesc: 'Convert PDF to Excel online for free. Extract tables and data from PDFs into spreadsheet format — no upload, 100% private.',
     },
+    editor: {
+      name: 'Edit PDF',
+      shortDesc: 'Add text, drawings, and images to your PDF',
+      description: 'Edit your PDF directly in the browser. Add text annotations, freehand drawings, and images to your PDF pages. All processing happens locally — your documents never leave your device. Perfect for annotating documents, signing forms, or adding visual notes without any server uploads.',
+      seoTitle: 'Edit PDF Online Free - Add Text, Drawings & Images | PDFToolBox',
+      seoDesc: 'Edit PDF files online for free. Add text, draw annotations, and insert images directly in your browser — no upload, 100% private.',
+    },
+    sign: {
+      name: 'Sign PDF',
+      shortDesc: 'Add your signature to PDF documents',
+      description: 'Sign PDF documents electronically right in your browser. Draw your signature on the built-in pad and place it on your PDF pages. No need to print, sign, and scan again. Everything happens locally on your device — your signed documents never leave your browser, ensuring maximum privacy and security.',
+      seoTitle: 'Sign PDF Online Free - Add Electronic Signature | PDFToolBox',
+      seoDesc: 'Sign PDF documents online for free. Draw your signature and add it to PDFs directly in your browser — no upload, 100% private and secure.',
+    },
     'word-to-pdf': {
       name: 'Word to PDF',
       shortDesc: 'Convert Word documents to PDF',
@@ -148,6 +162,8 @@ const en = {
     'pdf-to-jpg': ['Upload your PDF file', 'Click "Convert to JPG" to start', 'Each page will be converted to an image', 'Download images individually or as ZIP'],
     'jpg-to-pdf': ['Upload your JPG/PNG image files', 'Arrange images in desired order', 'Click "Convert to PDF" to create document', 'Download your new PDF file'],
     'pdf-to-excel': ['Upload your PDF file', 'Click "Extract to Excel" to start', 'Text data will be extracted from tables', 'Download the CSV file (open in Excel)'],
+    editor: ['Upload your PDF file', 'Use toolbar to add text, drawings, or images', 'Navigate pages and place annotations', 'Click "Export PDF" to download your edited file'],
+    sign: ['Upload your PDF file', 'Draw your signature on the signature pad', 'Click "Sign PDF" to apply signature', 'Download your signed PDF'],
     'word-to-pdf': ['Upload your Word (DOCX) file', 'Click "Convert to PDF" to start', 'Wait for document conversion', 'Download your PDF file'],
     rotate: ['Upload your PDF file', 'Select rotation angle (90°, 180°, or 270°)', 'Choose to rotate all pages or specific pages', 'Click "Rotate" and download the result'],
     'page-numbers': ['Upload your PDF file', 'Choose position (top/bottom, left/center/right)', 'Select format style', 'Click "Add Page Numbers" and download'],
@@ -162,6 +178,8 @@ const en = {
     'pdf-to-jpg': ['High-quality image export', 'Convert all pages at once', 'Individual or batch download', 'Adjustable image quality', 'ZIP download for multiple pages', 'No upload required'],
     'jpg-to-pdf': ['Support JPG, PNG, and more', 'Arrange images in order', 'Custom page size and margins', 'High-quality output', 'Batch image processing', 'No file size limit'],
     'pdf-to-excel': ['Extract tabular data', 'CSV output (Excel compatible)', 'Handle multi-page tables', 'No upload required', 'Preserve data structure', 'Fast extraction speed'],
+    editor: ['Add text annotations', 'Freehand drawing tools', 'Insert images', 'Multi-page support', 'Undo/redo history', '100% client-side processing'],
+    sign: ['Draw your signature', 'Place on any page', 'Professional appearance', 'No upload required', 'Fast processing', 'Maximum privacy'],
     'word-to-pdf': ['Convert DOCX to PDF', 'Preserve document formatting', 'Professional output quality', 'No upload required', 'Fast conversion', 'Universal compatibility'],
     rotate: ['Rotate by 90°, 180°, or 270°', 'Rotate individual pages', 'Rotate entire document', 'Preview rotation', 'No quality loss', 'Instant processing'],
     'page-numbers': ['Multiple position options', 'Custom number formats', 'Page X of Y style', 'Adjustable font size', 'Works on selected pages', 'Professional appearance'],
@@ -176,6 +194,8 @@ const en = {
     'pdf-to-jpg': 'PDFToolBox PDF to JPG renders each page as a high-quality image using your browser\'s rendering engine. Export individual pages or download all as a ZIP archive. No upload, no quality compromise, complete privacy.',
     'jpg-to-pdf': 'PDFToolBox JPG to PDF combines your images into professional PDF documents. Arrange photos, screenshots, or graphics in any order, customize layout, and create polished PDFs — all without uploading a single file.',
     'pdf-to-excel': 'PDFToolBox PDF to Excel extracts structured data from your PDFs into spreadsheet-compatible format. Ideal for text-based PDFs with tables and structured content. Process everything locally for complete data privacy.',
+    editor: 'PDFToolBox Editor lets you annotate PDFs directly in your browser. Add text, drawings, and images without uploading to any server. Perfect for marking up documents, adding notes, or making visual edits. All processing stays on your device for complete privacy.',
+    sign: 'PDFToolBox Sign lets you add electronic signatures to PDFs without printing and scanning. Draw your signature on the built-in pad and apply it to your documents instantly. Everything happens locally — your signed documents never leave your browser, ensuring maximum security and privacy.',
     'word-to-pdf': 'PDFToolBox Word to PDF converts your DOCX files into universal PDF format. Preserve formatting while creating documents that anyone can open. All conversion happens in your browser — no server, no upload, complete privacy.',
     rotate: 'PDFToolBox Rotate PDF fixes orientation issues instantly. Whether you scanned documents sideways or need to reorient specific pages, our tool handles it all locally. No upload means your documents stay completely private.',
     'page-numbers': 'PDFToolBox Add Page Numbers gives your PDFs a professional touch. Choose from multiple positions and formats to number your pages perfectly. Ideal for reports, theses, and business documents — all processed privately in your browser.',
@@ -220,6 +240,17 @@ const en = {
       { q: 'What format is the output?', a: 'The output is a CSV file that can be opened directly in Microsoft Excel, Google Sheets, or any spreadsheet application.' },
       { q: 'Can it extract images from PDF?', a: 'This tool focuses on text and table data extraction. Images are not included in the output.' },
     ],
+    editor: [
+      { q: 'What can I add to my PDF?', a: 'You can add text annotations, freehand drawings, and images (PNG/JPG) to any page of your PDF.' },
+      { q: 'Is my PDF uploaded anywhere?', a: 'No. All editing happens directly in your browser. Your files never leave your device.' },
+      { q: 'Can I edit existing text in the PDF?', a: 'This tool adds new content (text, drawings, images) on top of your PDF. It does not modify existing text — that requires more advanced PDF editing software.' },
+      { q: 'Can I undo my changes?', a: 'Yes! Use the Undo/Redo buttons in the toolbar to step through your edit history.' },
+    ],
+    sign: [
+      { q: 'Is an electronic signature legally binding?', a: 'In most countries, electronic signatures are legally binding for most document types. Check your local regulations for specific requirements.' },
+      { q: 'Is my signature uploaded to a server?', a: 'No. Your signature is drawn and applied entirely in your browser. Nothing is uploaded anywhere.' },
+      { q: 'Can I sign multiple pages?', a: 'Yes, your signature will be placed on every page of the PDF automatically.' },
+    ],
     'word-to-pdf': [
       { q: 'What Word formats are supported?', a: 'We support DOCX files (Word 2007 and later). Older DOC format files should be saved as DOCX first.' },
       { q: 'Will formatting be preserved?', a: 'Basic formatting including text styles, fonts, and layout is preserved. Very complex formatting may have minor differences.' },
@@ -247,7 +278,7 @@ const en = {
     ],
   },
   footer: {
-    copyright: '© 2024 PDFToolBox. All rights reserved.',
+    copyright: '© 2024–2026 PDFToolBox. All rights reserved.',
     description: 'Free online PDF tools. 100% private, no upload required.',
     quickLinks: 'Quick Links',
     tools: 'Tools',
@@ -532,6 +563,11 @@ Every email sent to PDFToolBox is read by a real person on our team. We value yo
 
 Thank you for being part of the PDFToolBox community!
     `,
+  },
+  pdfSign: {
+    signaturePad: 'Draw Your Signature',
+    signatureHint: 'Use your mouse or finger to draw your signature below. It will be placed on every page of your PDF.',
+    signPdf: 'Sign PDF',
   },
   notFound: {
     title: 'Page Not Found',

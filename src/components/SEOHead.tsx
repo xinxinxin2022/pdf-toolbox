@@ -6,7 +6,7 @@ interface SEOHeadProps {
   description: string;
   canonical?: string;
   ogType?: string;
-  jsonLd?: object;
+  jsonLd?: object | object[];
 }
 
 export default function SEOHead({ title, description, canonical, ogType = 'website', jsonLd }: SEOHeadProps) {
@@ -31,11 +31,11 @@ export default function SEOHead({ title, description, canonical, ogType = 'websi
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
 
-      {jsonLd && (
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
+      {jsonLd && (Array.isArray(jsonLd) ? jsonLd : [jsonLd]).map((schema, i) => (
+        <script key={i} type="application/ld+json">
+          {JSON.stringify(schema)}
         </script>
-      )}
+      ))}
     </Helmet>
   );
 }

@@ -19,6 +19,45 @@ const ADSENSE_ID = 'ca-pub-1812733940760212';
 // Tool data - mirrors src/i18n/en.ts
 const tools = [
   {
+    slug: 'edit-pdf',
+    name: 'Edit PDF',
+    icon: '✏️',
+    category: 'Edit',
+    shortDesc: 'Add text, drawings, and images to your PDF',
+    description: 'Edit your PDF directly in the browser. Add text annotations, freehand drawings, and images to your PDF pages. All processing happens locally — your documents never leave your device. Perfect for annotating documents, marking up forms, or adding visual notes without any server uploads.',
+    seoTitle: 'Edit PDF Online Free - Add Text, Drawings & Images | PDFToolBox',
+    seoDesc: 'Edit PDF files online for free. Add text, draw annotations, and insert images directly in your browser — no upload, 100% private.',
+    features: ['Add text annotations', 'Freehand drawing tools', 'Insert images (PNG/JPG)', 'Multi-page support', 'Undo/redo history', '100% client-side processing'],
+    howToUse: ['Upload your PDF file', 'Use toolbar to add text, drawings, or images', 'Navigate pages and place annotations', 'Click "Export PDF" to download your edited file'],
+    whyUse: 'PDFToolBox Editor lets you annotate PDFs directly in your browser. Add text, drawings, and images without uploading to any server. Perfect for marking up documents, adding notes, or making visual edits. All processing stays on your device for complete privacy.',
+    faq: [
+      { q: 'What can I add to my PDF?', a: 'You can add text annotations, freehand drawings, and images (PNG/JPG) to any page of your PDF.' },
+      { q: 'Is my PDF uploaded anywhere?', a: 'No. All editing happens directly in your browser. Your files never leave your device.' },
+      { q: 'Can I edit existing text in the PDF?', a: 'This tool adds new content (text, drawings, images) on top of your PDF. It does not modify existing text — that requires more advanced PDF editing software.' },
+      { q: 'Can I undo my changes?', a: 'Yes! Use the Undo/Redo buttons in the toolbar to step through your edit history.' },
+    ],
+    keywords: ['edit pdf', 'pdf editor', 'annotate pdf', 'add text to pdf', 'draw on pdf', 'edit pdf online free'],
+  },
+  {
+    slug: 'sign-pdf',
+    name: 'Sign PDF',
+    icon: '✍️',
+    category: 'Edit',
+    shortDesc: 'Add your electronic signature to PDF documents',
+    description: 'Sign PDF documents electronically right in your browser. Draw your signature on the built-in pad and place it on your PDF pages. No need to print, sign, and scan again. Everything happens locally on your device — your signed documents never leave your browser, ensuring maximum privacy and security.',
+    seoTitle: 'Sign PDF Online Free - Add Electronic Signature | PDFToolBox',
+    seoDesc: 'Sign PDF documents online for free. Draw your signature and add it to PDFs directly in your browser — no upload, 100% private and secure.',
+    features: ['Draw your signature', 'Place on every page', 'Professional appearance', 'No upload required', 'Fast processing', 'Maximum privacy'],
+    howToUse: ['Upload your PDF file', 'Draw your signature on the signature pad', 'Click "Sign PDF" to apply signature', 'Download your signed PDF'],
+    whyUse: 'PDFToolBox Sign lets you add electronic signatures to PDFs without printing and scanning. Draw your signature on the built-in pad and apply it to your documents instantly. Everything happens locally — your signed documents never leave your browser, ensuring maximum security and privacy.',
+    faq: [
+      { q: 'Is an electronic signature legally binding?', a: 'In most countries, electronic signatures are legally binding for most document types. Check your local regulations for specific requirements.' },
+      { q: 'Is my signature uploaded to a server?', a: 'No. Your signature is drawn and applied entirely in your browser. Nothing is uploaded anywhere.' },
+      { q: 'Can I sign multiple pages?', a: 'Yes, your signature will be placed on every page of the PDF automatically.' },
+    ],
+    keywords: ['sign pdf', 'pdf signature', 'electronic signature', 'esign pdf', 'sign pdf online free'],
+  },
+  {
     slug: 'merge-pdf',
     name: 'Merge PDF',
     icon: '📎',
@@ -189,6 +228,44 @@ const tools = [
       { q: 'Will the content be affected?', a: 'No, unlocking only removes restrictions. The document content remains exactly the same.' },
     ],
     keywords: ['unlock pdf', 'remove pdf password', 'pdf unlock online', 'unlock pdf online free', 'remove pdf restrictions'],
+  },
+  {
+    slug: 'pdf-to-excel',
+    name: 'PDF to Excel',
+    icon: '📊',
+    category: 'Convert',
+    shortDesc: 'Extract tables from PDF to Excel-compatible format',
+    description: 'Extract tabular data from your PDF files into Excel-compatible CSV format. Our tool analyzes the PDF content, identifies text positions, and reconstructs table rows and columns. Best suited for text-based PDFs with clearly structured data like reports, invoices, and data exports. The CSV output can be opened directly in Microsoft Excel, Google Sheets, or any spreadsheet application. All processing happens in your browser — your documents never leave your device.',
+    seoTitle: 'Convert PDF to Excel Online Free - Extract Tables | PDFToolBox',
+    seoDesc: 'Convert PDF to Excel online for free. Extract tables and data from PDFs into spreadsheet format — no upload, 100% private.',
+    features: ['Extract table data from PDF', 'CSV output (Excel compatible)', 'Process multi-page tables', 'No upload required', 'Preserve data structure', 'Fast extraction speed'],
+    howToUse: ['Upload your PDF file', 'Click "Extract to Excel" to start', 'Table data will be extracted from the PDF', 'Download the CSV file (openable in Excel)'],
+    whyUse: 'PDFToolBox PDF to Excel extracts structured data from your PDFs into spreadsheet-compatible format. Perfect for text-based PDFs with tables and structured content. All processing happens locally, ensuring complete data privacy. Ideal for converting invoices, reports, and data exports back into editable spreadsheets without any server upload.',
+    faq: [
+      { q: 'How accurate is the data extraction?', a: 'Extraction works best with text-based PDFs that have clear table structures. Scanned PDFs or complex layouts may require manual cleanup.' },
+      { q: 'What format is the output?', a: 'The output is a CSV file that can be opened directly in Microsoft Excel, Google Sheets, or any spreadsheet application.' },
+      { q: 'Can images in the PDF be extracted?', a: 'This tool focuses on text and table data extraction. Images are not included in the output.' },
+    ],
+    keywords: ['pdf to excel', 'pdf to csv', 'extract table from pdf', 'pdf to spreadsheet online free', 'pdf data extraction'],
+  },
+  {
+    slug: 'word-to-pdf',
+    name: 'Word to PDF',
+    icon: '',
+    category: 'Convert',
+    shortDesc: 'Convert Word documents to PDF format',
+    description: 'Convert your Word documents (DOCX) to professional PDF files. Our tool parses the DOCX file structure, extracts text content with formatting, and renders it as a high-quality PDF. The conversion preserves document layout, text styles, and paragraph structure. Perfect for creating universally readable documents that look the same on any device. Everything runs in your browser — no uploads, complete privacy.',
+    seoTitle: 'Free Word to PDF Converter Online - DOCX to PDF | PDFToolBox',
+    seoDesc: 'Convert Word to PDF online for free. DOCX to PDF conversion in your browser — no upload, no registration, 100% private.',
+    features: ['Convert DOCX to PDF', 'Preserve document formatting', 'Professional output quality', 'No upload required', 'Fast conversion', 'Universal compatibility'],
+    howToUse: ['Upload your Word (DOCX) file', 'Click "Convert to PDF" to start', 'Wait for the document to convert', 'Download your PDF file'],
+    whyUse: 'PDFToolBox Word to PDF converts DOCX files to universally readable PDF format while preserving formatting. Create documents that anyone can open, regardless of whether they have Word installed. All conversion happens in your browser — no server, no upload, complete privacy. Ideal for sharing contracts, reports, and documents that need to look the same everywhere.',
+    faq: [
+      { q: 'What Word formats are supported?', a: 'We support DOCX files (Word 2007 and later). Older DOC format files should be saved as DOCX first.' },
+      { q: 'Will formatting be preserved?', a: 'Basic formatting including text styles, fonts, and layout is preserved. Very complex formatting may have minor differences.' },
+      { q: 'Is there a file size limit?', a: 'There is no hard limit, but very large documents may be slow to process in the browser.' },
+    ],
+    keywords: ['word to pdf', 'docx to pdf', 'convert word to pdf', 'word to pdf online free', 'docx converter'],
   },
   {
     slug: 'pdf-to-word',
@@ -553,6 +630,22 @@ const toolTemplate = (tool) => `<!DOCTYPE html>
     "isPartOf": { "@type": "WebSite", "name": "PDFToolBox", "url": "${BASE_URL}" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+  ${tool.faq.map(faq => `    {
+      "@type": "Question",
+      "name": "${faq.q.replace(/"/g, '\\"')}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "${faq.a.replace(/"/g, '\\"')}"
+      }
+    }`).join(',\n')}
+    ]
+  }
+  </script>
 </head>
 <body>
   <header>
@@ -605,7 +698,7 @@ const toolTemplate = (tool) => `<!DOCTYPE html>
   </div>
 
   <footer>
-    <p>© 2024 PDFToolBox. All rights reserved.</p>
+    <p>© 2024–2026 PDFToolBox. All rights reserved.</p>
     <p style="margin-top:10px;">
       <a href="${BASE_URL}/privacy-policy">Privacy Policy</a>
       <a href="${BASE_URL}/terms-of-service">Terms of Service</a>
@@ -665,7 +758,7 @@ const staticTemplate = (page) => `<!DOCTYPE html>
   </header>
   ${page.content}
   <footer>
-    <p>© 2024 PDFToolBox. All rights reserved.</p>
+    <p>© 2024–2026 PDFToolBox. All rights reserved.</p>
     <p style="margin-top:10px;">
       <a href="${BASE_URL}/privacy-policy">Privacy Policy</a>
       <a href="${BASE_URL}/terms-of-service">Terms of Service</a>
@@ -797,7 +890,7 @@ const indexContent = `<!DOCTYPE html>
   </div>
 
   <footer>
-    <p>© 2024 PDFToolBox. All rights reserved.</p>
+    <p>© 2024–2026 PDFToolBox. All rights reserved.</p>
     <p style="margin-top:10px;">
       <a href="${BASE_URL}/privacy-policy">Privacy Policy</a>
       <a href="${BASE_URL}/terms-of-service">Terms of Service</a>

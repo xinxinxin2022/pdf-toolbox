@@ -362,7 +362,7 @@ Bigger reduction doesn't necessarily mean better compression. An extremely small
 
 The goal of compression is to achieve the right balance — making the file small enough for your needs while keeping the quality appropriate for its purpose. A PDF for email attachments might target 2MB. A PDF for professional printing might stay at 20MB. A PDF for web viewing might aim for 500KB. Each target requires different compression settings.
 
-The best compression preserves the quality needed for the document's intended use. Blindly追求 the smallest file size leads to unusable documents.
+The best compression preserves the quality needed for the document's intended use. Blindly pursuing the smallest file size leads to unusable documents.
 
 ## Myth 5: All Parts of a PDF Compress Equally
 

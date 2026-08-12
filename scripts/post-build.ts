@@ -13,8 +13,8 @@ if (!fs.existsSync(pagesDir)) {
 }
 
 const tools = [
-  'merge-pdf', 'split-pdf', 'compress-pdf', 'pdf-to-word', 'pdf-to-jpg',
-  'jpg-to-pdf', 'rotate-pdf',
+  'edit-pdf', 'sign-pdf', 'merge-pdf', 'split-pdf', 'compress-pdf', 'pdf-to-word', 'pdf-to-excel',
+  'word-to-pdf', 'pdf-to-jpg', 'jpg-to-pdf', 'rotate-pdf',
   'add-page-numbers', 'watermark-pdf', 'unlock-pdf',
 ];
 

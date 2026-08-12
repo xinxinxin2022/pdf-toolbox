@@ -67,6 +67,46 @@
     "isPartOf": { "@type": "WebSite", "name": "PDFToolBox", "url": "https://pdf-toolbox.asia" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+      "@type": "Question",
+      "name": "What type of PDFs does this support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This tool works with text-based PDFs — PDFs created from Word, Google Docs, or similar applications that have an embedded text layer. Scanned PDFs and image-based PDFs are not supported."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my PDF show no text?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your PDF is a scanned document or image-based, it doesn't contain a text layer. This tool cannot extract text from such PDFs. You would need OCR software for scanned documents."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is formatting preserved?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. This tool extracts raw text only. Images, tables, fonts, colors, and layout are not preserved. The output is plain text in a Word-compatible format."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What format is the output?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The output is an HTML file saved as .doc, which can be opened in Microsoft Word. It contains the extracted text organized by page."
+      }
+    }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header>
@@ -146,7 +186,7 @@
   </div>
 
   <footer>
-    <p>© 2024 PDFToolBox. All rights reserved.</p>
+    <p>© 2024–2026 PDFToolBox. All rights reserved.</p>
     <p style="margin-top:10px;">
       <a href="https://pdf-toolbox.asia/privacy-policy">Privacy Policy</a>
       <a href="https://pdf-toolbox.asia/terms-of-service">Terms of Service</a>
